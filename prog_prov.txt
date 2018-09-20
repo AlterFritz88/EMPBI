@@ -1,0 +1,39 @@
+ggfhgfh,fdghfghf
+
+UI e1[] = {
+x1fff,
+    x01,
+    x0010,
+    x9000,
+
+    x3fff,
+    x0003,    //3 groups
+    x0050,    //t1
+    xff00,
+    x00ff,
+    xaabb,
+    xbbaa,
+    x0100,   //t2
+    x0001,
+    x1000,
+    xa000,
+    x000a,
+    x1000,   //t3
+    xaaaa,
+    xbbbb,
+    x9999,
+    x7777,
+
+    x5fff,
+    x0003,
+    x0060,    //t1
+    xffaa,
+    xaaff,
+    x0200,    //t2
+    xddee,
+    xeedd,
+    x2000,    //t3
+    xddee,
+    x0000,
+
+}
