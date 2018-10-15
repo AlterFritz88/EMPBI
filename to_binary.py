@@ -5,7 +5,7 @@
 '''
 sample = ['0', 'x']
 temp = []
-with open('octal_pp', 'r') as file:
+with open('prog_prov.txt', 'r') as file:
     for line in file:
         line = line.replace(' ', '')
         if line[0] in sample:
@@ -30,8 +30,8 @@ else:
 
 with open('bin_pp', 'w') as wfile:
     for item in temp_bin:
-        wfile.write(item + ',')
+        wfile.write(item + '\n')
 
 print(temp_bin)
-rgfydrtyrf
+
 

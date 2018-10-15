@@ -1,39 +1,32 @@
-ggfhgfh,fdghfghf
 
-UI e1[] = {
-x1fff,
+
+E1
+    x07ff,
     x01,
     x0010,
     x9000,
 
-    x3fff,
+    x17ff,
     x0003,    //3 groups
+
     x0050,    //t1
+
+    xf0f0,
+    x0f00,
+    xaa00,
+    x0077,
+
+    x00a0,   //t2
+
+    xa0a0,
     xff00,
-    x00ff,
-    xaabb,
-    xbbaa,
-    x0100,   //t2
-    x0001,
-    x1000,
-    xa000,
-    x000a,
-    x1000,   //t3
-    xaaaa,
-    xbbbb,
-    x9999,
-    x7777,
+    xfa00,
+    xdada,
 
-    x5fff,
-    x0003,
-    x0060,    //t1
-    xffaa,
-    xaaff,
-    x0200,    //t2
-    xddee,
-    xeedd,
-    x2000,    //t3
-    xddee,
-    x0000,
+    x0100,  //t3
 
-}
+    x1111,
+    x2222,
+    x3333,
+    x4444,
+
