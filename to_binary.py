@@ -12,8 +12,10 @@ with open('prog_prov.txt', 'r') as file:
             for i in range(len(line)):
                 if (line[i] == ',') and (line[0] == 'x'):
                     temp.append(line[1:i])
+                    break
                 elif (line[i] == ',') and (line[0] == '0'):
-                    temp.append(line[:i])
+                    temp.append(line[1:i])
+                    break
 
 
 def hex2bin(str, form=16):
