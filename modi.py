@@ -10,20 +10,32 @@ i = 0
 modification_point = None
 limited = False
 while i < all_data:
-    print(i)
-    if preper_data[i][5:] == '11111111111':
+    if (preper_data[i][6:] == '1111111111') and (preper_data[i][0] == '1'):
         if preper_data[i][0] == '1':
             modification_point = i
+            print(modification_point)
 
-        if preper_data[i][4] == 1:
-            limited = True
+    if (preper_data[i][4] == '1') and (preper_data[i][6:] == '1111111111'):
+        limited = True
 
-    if limited and (preper_data[i+1] == '0000000010000000'):
+
+    if (limited == 1) and (preper_data[i+1] == '0000001000000000'):
         steps = int(preper_data[i][0:7], 2)
         i += 2
-        count_number_chanches = int(preper_data[i][0:8], 2)
-        preper_data[int(preper_data[i][10:], 2)] = preper_data[i+count_number_chanches]
+        count_number_chanches = int(preper_data[i][0:4], 2)             # количество измененей
+        print(count_number_chanches)
+
+        preper_data[modification_point + int(preper_data[i][10:], 2)] = preper_data[i+count_number_chanches]
+        i += 1
+
+        for j in range(count_number_chanches - 1):
+            print(preper_data[i + j], i + j, i + count_number_chanches + j, preper_data[i + count_number_chanches + j])
+            preper_data[modification_point + int(preper_data[i+j],2)] = preper_data[i+count_number_chanches+j]
+
+        i += (count_number_chanches * 2) - 1
+
+
     i += 1
-print(modification_point)
+print(preper_data)
 
 #print(preper_data[int(preper_data[i][10:], 2)])
