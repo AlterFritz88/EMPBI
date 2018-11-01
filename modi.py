@@ -1,41 +1,97 @@
+from to_binary import hex2bin
 
 preper_data = []
 with open('bin_pp', 'r') as file:
     for line in file:
         preper_data.append(line[:-1])
-#print(preper_data)
 
 all_data = len(preper_data)
 i = 0
 modification_point = None
 limited = False
+modifications = None
+limited_point = None
+uart_data = []
 while i < all_data:
+
     if (preper_data[i][6:] == '1111111111') and (preper_data[i][0] == '1'):
         if preper_data[i][0] == '1':
             modification_point = i
-            print(modification_point)
 
     if (preper_data[i][4] == '1') and (preper_data[i][6:] == '1111111111'):
         limited = True
-
+        limited_point = i
 
     if (limited == 1) and (preper_data[i+1] == '0000001000000000'):
         steps = int(preper_data[i][0:7], 2)
+        modifications = int(preper_data[i][7:], 2)
         i += 2
-        count_number_chanches = int(preper_data[i][0:4], 2)             # количество измененей
-        print(count_number_chanches)
 
-        preper_data[modification_point + int(preper_data[i][10:], 2)] = preper_data[i+count_number_chanches]
-        i += 1
+        for step in range(steps):
+            for mod in range(modifications):
 
-        for j in range(count_number_chanches - 1):
-            print(preper_data[i + j], i + j, i + count_number_chanches + j, preper_data[i + count_number_chanches + j])
-            preper_data[modification_point + int(preper_data[i+j],2)] = preper_data[i+count_number_chanches+j]
+                count_number_chanches = int(preper_data[i][0:4], 2)             # количество измененей
+                print(count_number_chanches)
 
-        i += (count_number_chanches * 2) - 1
+                preper_data[modification_point + int(preper_data[i][10:], 2)] = preper_data[i+count_number_chanches]
+                i += 1
 
+                for j in range(count_number_chanches - 1):
+                    preper_data[modification_point + int(preper_data[i+j],2)] = preper_data[i+count_number_chanches+j]
+                i += (count_number_chanches * 2) - 1
+
+                new_i = modification_point
+                while new_i <= limited_point:
+                    if preper_data[new_i][5:] == '11111111111':  # it means FG
+
+                        if preper_data[new_i][1:4] == '000':  # it means mode 000
+                            uart_data.append('10000010')  # reset
+                            uart_data.append('10100100')  # byte to say
+                            uart_data.append('11111111')  # first byte of 1 reg
+                            uart_data.append(
+                                '0' + preper_data[new_i + 1][11] + preper_data[new_i + 1][9:11] + preper_data[new_i + 1][12] +
+                                preper_data[new_i + 1][
+                                    13] + preper_data[new_i + 1][14:])
+                            uart_data.append(preper_data[new_i + 2][0:8])
+                            uart_data.append(preper_data[new_i + 2][8:])
+                            uart_data.append(preper_data[new_i + 3][0:8])
+                            uart_data.append(preper_data[new_i + 3][8:])
+                            new_i = new_i + 3
+
+                        if preper_data[new_i][1:4] == '001':  # it means mode 001
+                            groups = int(preper_data[new_i + 1], 2) * 5
+                            # print(groups)
+                            new_i += 2
+                            uart_data.append('10010100')  # byte to say
+                            uart_data.append(hex2bin(str(hex(groups)), 16)[8:])
+                            uart_data.append('00000000')  # initial adr memory
+                            uart_data.append('00000001')
+                            for j in range(groups):
+                                uart_data.append(preper_data[new_i + j][0:8])
+                                uart_data.append(preper_data[new_i + j][8:])
+                            new_i += groups
+
+                        if preper_data[new_i][1:4] == '010':  # it means mode 010
+                            groups = int(preper_data[new_i + 1], 2) * 3
+                            new_i += 2
+                            uart_data.append('10000001')  # start
+                            uart_data.append('10011000')  # read memory
+                            uart_data.append(hex2bin(str(hex(groups)), 16)[8:])
+                            uart_data.append('00000000')  # initial adr memory
+                            uart_data.append('00000001')
+                            new_i += groups
+
+                        if preper_data[new_i][1:4] == '011':  # it means mode 011
+                            groups = int(preper_data[new_i + 1], 2) * 3
+                            new_i += 2
+                            uart_data.append('10000001')  # start
+                            uart_data.append('10011000')  # read memory
+                            uart_data.append(hex2bin(str(hex(groups)), 16)[8:])
+                            uart_data.append(preper_data[new_i][0:8])  # initial adr memory
+                            uart_data.append(preper_data[new_i][8:])
+                            new_i += groups
+                    new_i += 1
 
     i += 1
 print(preper_data)
-
-#print(preper_data[int(preper_data[i][10:], 2)])
+print(uart_data)
