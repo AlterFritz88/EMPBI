@@ -11,16 +11,73 @@ modification_point = None
 limited = False
 modifications = None
 limited_point = None
+in_process = 0
 uart_data = []
 while i < all_data:
-
-    if (preper_data[i][6:] == '1111111111') and (preper_data[i][0] == '1'):
+    print(i, limited)
+    if preper_data[i][6:] == '1111111111':
         if preper_data[i][0] == '1':
             modification_point = i
 
-    if (preper_data[i][4] == '1') and (preper_data[i][6:] == '1111111111'):
-        limited = True
-        limited_point = i
+        if preper_data[i][4] == '1':
+            limited = True
+            limited_point = i
+
+
+        if (preper_data[i][1:4] == '000') and in_process == 0:  # it means mode 000
+            in_process = 1
+            uart_data.append('10000010')  # reset
+            uart_data.append('10100100')  # byte to say
+            uart_data.append('11111111')  # first byte of 1 reg
+            uart_data.append(
+                '0' + preper_data[i + 1][11] + preper_data[i + 1][9:11] + preper_data[i + 1][12] + preper_data[i + 1][
+                    13] + preper_data[i + 1][14:])
+            uart_data.append(preper_data[i + 2][0:8])
+            uart_data.append(preper_data[i + 2][8:])
+            uart_data.append(preper_data[i + 3][0:8])
+            uart_data.append(preper_data[i + 3][8:])
+            i = i + 3
+
+
+        if (preper_data[i][1:4] == '001') and  in_process == 0:  # it means mode 001
+            in_process = 1
+            groups = int(preper_data[i + 1], 2) * 5
+            i += 2
+            uart_data.append('10010100')  # byte to say
+            uart_data.append(hex2bin(str(hex(groups)), 16)[8:])
+            uart_data.append('00000000')  # initial adr memory
+            uart_data.append('00000001')
+            for j in range(groups):
+                uart_data.append(preper_data[i + j][0:8])
+                uart_data.append(preper_data[i + j][8:])
+            i += groups - 1
+
+
+        if (preper_data[i][1:4] == '010') and in_process == 0:  # it means mode 010
+            in_process = 1
+            groups = int(preper_data[i + 1], 2) * 3
+            i += 2
+            uart_data.append('10000001')  # start
+            uart_data.append('10011000')  # read memory
+            uart_data.append(hex2bin(str(hex(groups)), 16)[8:])
+            uart_data.append('00000000')  # initial adr memory
+            uart_data.append('00000001')
+            i += groups
+
+        if (preper_data[i][1:4] == '011') and in_process == 0:  # it means mode 011
+            in_process = 1
+            groups = int(preper_data[i + 1], 2) * 3
+            i += 2
+            uart_data.append('10000001')  # start
+            uart_data.append('10011000')  # read memory
+            uart_data.append(hex2bin(str(hex(groups)), 16)[8:])
+            uart_data.append(preper_data[i][0:8])  # initial adr memory
+            uart_data.append(preper_data[i][8:])
+            i += groups + 1
+
+
+
+
 
     if (limited == 1) and (preper_data[i+1] == '0000001000000000'):
         steps = int(preper_data[i][0:7], 2)
@@ -41,10 +98,12 @@ while i < all_data:
                 i += (count_number_chanches * 2) - 1
 
                 new_i = modification_point
+                in_process = 0
                 while new_i <= limited_point:
                     if preper_data[new_i][5:] == '11111111111':  # it means FG
 
-                        if preper_data[new_i][1:4] == '000':  # it means mode 000
+                        if (preper_data[new_i][1:4] == '000') and in_process == 0:  # it means mode 000
+                            in_process = 1
                             uart_data.append('10000010')  # reset
                             uart_data.append('10100100')  # byte to say
                             uart_data.append('11111111')  # first byte of 1 reg
@@ -58,7 +117,8 @@ while i < all_data:
                             uart_data.append(preper_data[new_i + 3][8:])
                             new_i = new_i + 3
 
-                        if preper_data[new_i][1:4] == '001':  # it means mode 001
+                        if (preper_data[new_i][1:4] == '001') and in_process == 0:  # it means mode 001
+                            in_process = 1
                             groups = int(preper_data[new_i + 1], 2) * 5
                             # print(groups)
                             new_i += 2
@@ -71,7 +131,8 @@ while i < all_data:
                                 uart_data.append(preper_data[new_i + j][8:])
                             new_i += groups
 
-                        if preper_data[new_i][1:4] == '010':  # it means mode 010
+                        if (preper_data[new_i][1:4] == '010') and in_process == 0:  # it means mode 010
+                            in_process = 1
                             groups = int(preper_data[new_i + 1], 2) * 3
                             new_i += 2
                             uart_data.append('10000001')  # start
@@ -81,7 +142,8 @@ while i < all_data:
                             uart_data.append('00000001')
                             new_i += groups
 
-                        if preper_data[new_i][1:4] == '011':  # it means mode 011
+                        if (preper_data[new_i][1:4] == '011') and in_process == 0:  # it means mode 011
+                            in_process = 1
                             groups = int(preper_data[new_i + 1], 2) * 3
                             new_i += 2
                             uart_data.append('10000001')  # start
@@ -91,7 +153,9 @@ while i < all_data:
                             uart_data.append(preper_data[new_i][8:])
                             new_i += groups
                     new_i += 1
-
+                    in_process = 0
+        #limited = False
     i += 1
+    in_process = 0
 print(preper_data)
 print(uart_data)
