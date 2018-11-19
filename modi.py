@@ -1,11 +1,13 @@
 from to_binary import hex2bin
 from collections import deque
+from to_binary import to_binary_pp
 
 preper_data = []
 etalons = []
-with open('bin_pp', 'r') as file:
-    for line in file:
-        preper_data.append(line[:-1])
+
+preper_data = to_binary_pp('prog_prov.txt')
+
+print(preper_data)
 
 all_data = len(preper_data)
 i = 0
@@ -15,6 +17,8 @@ modifications = None
 limited_point = None
 in_process = 0
 uart_data = []
+
+
 while i < all_data:
     if preper_data[i][6:] == '1111111111':
         if preper_data[i][0] == '1':
