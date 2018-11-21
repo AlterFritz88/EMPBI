@@ -17,22 +17,30 @@ def to_binary_pp(filename):
     sample = ['0', 'x', 'E']
     temp = {}
 
-    with open('prog_prov.txt', 'r') as file:
+    with open(filename, 'r') as file:
         for line in file:
             line = line.replace(' ', '')
-            if line[0] in sample:
-                for i in range(len(line)):
-                    if (line[i] == ',') and (line[0] == 'x'):
-                        temp[count_et].append(line[1:i])
-                        break
-                    elif (line[i] == ',') and (line[0] == '0'):
-                        temp[count_et].append(line[1:i])
-                        break
-                    elif (line[i] == ':') and (line[0] == 'E'):
-                        count_et = int(line[-3:2])
-                        temp[count_et] = []
-                        break
+            if line[:2] == '0,':
+                temp[count_et].append('0000000000000000')
+                continue
+            for i in range(len(line)):
+                if line[0] == '/':
+                    break
+                elif (line[i] == ',') and (line[0] == 'x'):
+                    temp[count_et].append(hex2bin(line[1:i], 16))
+                    break
+                elif (line[i] == ',') and (line[0] == '0'):
+                    temp[count_et].append(hex2bin(line[1:i], 8))
+                    break
+                elif (line[i] == ':') and (line[0] == 'E'):
+                    count_et = int(line[1:-2])
+                    temp[count_et] = []
+                    break
 
+                elif line[i] == ',' and (not line[0] == 'x') and (not line[0] == '0') and (not line[0] == 'E'):
+                    temp[count_et].append(hex2bin(line[0:i], 10))
+                    break
+    '''
     temp_bin = {}
     if len(max(temp[count_et])) == 4:
         for key, value in temp.items():
@@ -41,7 +49,7 @@ def to_binary_pp(filename):
     else:
         for key, value in temp.items():
             temp_bin[key] = [hex2bin(x, 8) for x in value]
-
-    return temp_bin
+    '''
+    return temp
 
 
