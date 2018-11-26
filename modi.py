@@ -12,34 +12,39 @@ for key, value in data.items():
     print(key)
     for kusok in value:
         print(kusok)
-
-print(data)
 print(etaps)
 
 
-i = 0
-modification_point = None
-limited = False
-modifications = None
-limited_point = None
-in_process = 0
 uart_data = []
 
 for etap in etaps:
     preper_data = data[etap]
     all_data = len(preper_data)
-
+    in_process = 0
+    i = 0
+    modification_point = None
+    limited = False
+    modifications = None
+    limited_point = None
     while i < all_data:
         if preper_data[i] == '0000000001111110':
             'этап модификации этапа'
-            count_words = int(preper_data[i+1][0:7], 2)
-            shift = preper_data[i+1][7:]
-            value = preper_data[i+2]
-            preper_data[shift] = value
-            i += 3
-            print('count words', count_words)
-            #for j in range(count_words):
+            temp_data = preper_data
 
+            count_words = int(preper_data[i+2][0:7], 2)
+            shift = int(preper_data[i+2][7:], 2)
+            print(shift)
+            value = preper_data[i+3]
+            preper_data[shift] = value
+            i += 4
+            print('count words', count_words)
+            for j in range(count_words - 1):
+                shift = int(preper_data[i], 2)
+                print(shift)
+                print(preper_data[shift])
+                preper_data[shift] = preper_data[i+1]
+                print(preper_data[shift])
+                i += 2
 
 
         if preper_data[i][6:] == '1111111111':
