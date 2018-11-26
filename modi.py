@@ -7,6 +7,12 @@ etalons = []
 
 data = to_binary_pp('prog_prov.txt')
 etaps = get_etaps('library.txt')
+
+for key, value in data.items():
+    print(key)
+    for kusok in value:
+        print(kusok)
+
 print(data)
 print(etaps)
 
@@ -24,6 +30,18 @@ for etap in etaps:
     all_data = len(preper_data)
 
     while i < all_data:
+        if preper_data[i] == '0000000001111110':
+            'этап модификации этапа'
+            count_words = int(preper_data[i+1][0:7], 2)
+            shift = preper_data[i+1][7:]
+            value = preper_data[i+2]
+            preper_data[shift] = value
+            i += 3
+            print('count words', count_words)
+            #for j in range(count_words):
+
+
+
         if preper_data[i][6:] == '1111111111':
             if preper_data[i][0] == '1':
                 modification_point = i
