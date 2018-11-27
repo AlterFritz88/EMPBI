@@ -25,27 +25,22 @@ for etap in etaps:
     modification_point = None
     limited = False
     modifications = None
-    limited_point = None
+    limited_point = 0
     while i < all_data:
         if preper_data[i] == '0000000001111110':
             'этап модификации этапа'
             temp_data = preper_data
-
             count_words = int(preper_data[i+2][0:7], 2)
             shift = int(preper_data[i+2][7:], 2)
-            print(shift)
             value = preper_data[i+3]
             preper_data[shift] = value
             i += 4
-            print('count words', count_words)
+
+
             for j in range(count_words - 1):
                 shift = int(preper_data[i], 2)
-                print(shift)
-                print(preper_data[shift])
                 preper_data[shift] = preper_data[i+1]
-                print(preper_data[shift])
                 i += 2
-
 
         if preper_data[i][6:] == '1111111111':
             if preper_data[i][0] == '1':
@@ -54,6 +49,7 @@ for etap in etaps:
             if preper_data[i][4] == '1':
                 limited = True
                 limited_point = i
+
 
 
             if (preper_data[i][1:4] == '000') and in_process == 0:  # it means mode 000
@@ -125,7 +121,6 @@ for etap in etaps:
 
                     if preper_data[i-1][8:] == '00000000':                       #табличный закон
                         count_number_chanches = int(preper_data[i][0:4], 2)      # количество измененей
-                        print(count_number_chanches)
 
                         preper_data[modification_point + int(preper_data[i][10:], 2)] = preper_data[i+count_number_chanches]
                         i += 1
@@ -188,6 +183,7 @@ for etap in etaps:
                                     i += slova + 1
                     new_i = modification_point
                     in_process = 0
+
                     while new_i <= limited_point:
                         if preper_data[new_i][5:] == '11111111111':  # it means FG
                             if (preper_data[new_i][1:4] == '000') and in_process == 0:  # it means mode 000
