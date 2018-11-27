@@ -15,9 +15,10 @@ for key, value in data.items():
 print(etaps)
 
 
-uart_data = []
+uart_data_etaps = {}
 
 for etap in etaps:
+    uart_data = []
     preper_data = data[etap]
     all_data = len(preper_data)
     in_process = 0
@@ -36,7 +37,6 @@ for etap in etaps:
             preper_data[shift] = value
             i += 4
 
-
             for j in range(count_words - 1):
                 shift = int(preper_data[i], 2)
                 preper_data[shift] = preper_data[i+1]
@@ -49,8 +49,6 @@ for etap in etaps:
             if preper_data[i][4] == '1':
                 limited = True
                 limited_point = i
-
-
 
             if (preper_data[i][1:4] == '000') and in_process == 0:  # it means mode 000
                 in_process = 1
@@ -80,7 +78,6 @@ for etap in etaps:
                     uart_data.append(preper_data[i + j][8:])
                 i += groups - 1
 
-
             if (preper_data[i][1:4] == '010') and in_process == 0:  # it means mode 010
                 in_process = 1
                 groups = int(preper_data[i + 1], 2) * 3
@@ -107,10 +104,6 @@ for etap in etaps:
                     etalons.append(preper_data[i + j])
                 i += groups + 1
 
-
-
-
-
         if (limited == 1):
             steps = int(preper_data[i][0:7], 2)
             modifications = int(preper_data[i][7:], 2)
@@ -128,7 +121,6 @@ for etap in etaps:
                         for j in range(count_number_chanches - 1):
                             preper_data[modification_point + int(preper_data[i+j],2)] = preper_data[i+count_number_chanches+j]
                         i += (count_number_chanches * 2) - 1
-
 
                     if preper_data[i-1][8:] == '00000001':                      # закон сдвигов
                         slova = int(preper_data[i][0:4], 2)
@@ -244,6 +236,7 @@ for etap in etaps:
             limited = False
         i += 1
         in_process = 0
+        uart_data_etaps[etap] = uart_data
 print(preper_data)
-print(uart_data)
+print(uart_data_etaps)
 print(etalons)
