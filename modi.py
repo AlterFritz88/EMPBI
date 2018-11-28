@@ -2,6 +2,7 @@ from to_binary import hex2bin
 from collections import deque
 from to_binary import to_binary_pp
 from lib_parse import get_etaps
+from correct_etap import correct_etap
 
 etalons = []
 
@@ -18,8 +19,11 @@ print(etaps)
 uart_data_etaps = {}
 
 for etap in etaps:
-    uart_data = []
     preper_data = data[etap]
+    if preper_data[0] == '0000000101111110':
+        preper_data = correct_etap(preper_data, data)
+
+    uart_data = []
     all_data = len(preper_data)
     in_process = 0
     i = 0
@@ -27,7 +31,10 @@ for etap in etaps:
     limited = False
     modifications = None
     limited_point = 0
+
+
     while i < all_data:
+
         if preper_data[i] == '0000000001111110':
             'этап модификации этапа'
             temp_data = preper_data
@@ -77,7 +84,8 @@ for etap in etaps:
                     uart_data.append(preper_data[i + j][0:8])
                     uart_data.append(preper_data[i + j][8:])
                 i += groups - 1
-
+            if etap == 100:
+                print(etap, preper_data[i], i)
             if (preper_data[i][1:4] == '010') and in_process == 0:  # it means mode 010
                 in_process = 1
                 groups = int(preper_data[i + 1], 2) * 3
@@ -197,7 +205,7 @@ for etap in etaps:
                                 in_process = 1
                                 groups = int(preper_data[new_i + 1], 2) * 5
                                 new_i += 2
-                                uart_data.append('10010100 mod')  # byte to say
+                                uart_data.append('10010100')  # byte to say
                                 uart_data.append(hex2bin(str(hex(groups)), 16)[8:])
                                 uart_data.append('00000000')  # initial adr memory
                                 uart_data.append('00000001')
