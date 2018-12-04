@@ -7,14 +7,11 @@ ser = serial.Serial('/dev/ttyUSB0', baudrate=1000000)
 
 answer = {}
 to_send, etalons, etaps = recive_pp()
-print('etalons: ',  etalons)
 
 for etap in etaps:
     data = to_send[etap]
-    print(data)
     data_b = [bytes([int(x, 2)]) for x in data]
     etalon = len(etalons[etap]) * 2
-    print(etalon, type(etalon))
     answer_etap = []
     for inf in data_b:
         if inf == b'\x81':
