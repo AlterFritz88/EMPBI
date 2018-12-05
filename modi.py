@@ -3,7 +3,7 @@ from collections import deque
 from to_binary import to_binary_pp
 from lib_parse import get_etaps
 from correct_etap import correct_etap
-from pusk_modificated import modificated
+from pusk_modificated import modificated, non_modificated
 
 
 def recive_pp():
@@ -35,11 +35,11 @@ def recive_pp():
         limited = False
         modifications = None
         limited_point = 0
-
+        print('etap', etap)
 
         while i < all_data:
 
-            if preper_data[i] == '0000000001111110':
+            if preper_data[i] == '0000000001111110' and  (i==0):
                 'этап модификации этапа'
                 temp_data = preper_data
                 count_words = int(preper_data[i+2][0:7], 2)
@@ -53,67 +53,10 @@ def recive_pp():
                     preper_data[shift] = preper_data[i+1]
                     i += 2
 
-            if preper_data[i][6:] == '1111111111':
-                if preper_data[i][0] == '1':
-                    modification_point = i
+            uart_data_t, etalons_t, i, limited, limited_point, modification_point = non_modificated(preper_data, i, all_data, limited)
+            uart_data.append(uart_data_t)
+            etalons.append(etalons_t)
 
-                if preper_data[i][4] == '1':
-                    limited = True
-                    limited_point = i
-
-                if (preper_data[i][1:4] == '000') and in_process == 0:  # it means mode 000
-                    in_process = 1
-                    uart_data.append('10000010')  # reset
-                    uart_data.append('10100100')  # byte to say
-                    uart_data.append('11111111')  # first byte of 1 reg
-                    uart_data.append(
-                        '0' + preper_data[i + 1][11] + preper_data[i + 1][9:11] + preper_data[i + 1][12] + preper_data[i + 1][
-                            13] + preper_data[i + 1][14:])
-                    uart_data.append(preper_data[i + 2][0:8])
-                    uart_data.append(preper_data[i + 2][8:])
-                    uart_data.append(preper_data[i + 3][0:8])
-                    uart_data.append(preper_data[i + 3][8:])
-                    i = i + 3
-
-
-                if (preper_data[i][1:4] == '001') and  in_process == 0:  # it means mode 001
-                    in_process = 1
-                    groups = int(preper_data[i + 1], 2) * 5
-                    i += 2
-                    uart_data.append('10010100')  # byte to say
-                    uart_data.append(hex2bin(str(hex(groups)), 16)[8:])
-                    uart_data.append('00000000')  # initial adr memory
-                    uart_data.append('00000001')
-                    for j in range(groups):
-                        uart_data.append(preper_data[i + j][0:8])
-                        uart_data.append(preper_data[i + j][8:])
-                    i += groups - 1
-
-                if (preper_data[i][1:4] == '010') and in_process == 0:  # it means mode 010
-                    in_process = 1
-                    groups = int(preper_data[i + 1], 2) * 3
-                    i += 2
-                    uart_data.append('10000001')  # start
-                    uart_data.append('10011000')  # read memory
-                    uart_data.append(hex2bin(str(hex(groups)), 16)[8:])
-                    uart_data.append('00000000')  # initial adr memory
-                    uart_data.append('00000001')
-                    for j in range(groups):
-                        etalons.append(preper_data[i + j])
-                    i += groups
-
-                if (preper_data[i][1:4] == '011') and in_process == 0:  # it means mode 011
-                    in_process = 1
-                    groups = int(preper_data[i + 1], 2) * 3
-                    i += 2
-                    uart_data.append('10000001')  # start
-                    uart_data.append('10011000')  # read memory
-                    uart_data.append(hex2bin(str(hex(groups)), 16)[8:])
-                    uart_data.append(preper_data[i][0:8])  # initial adr memory
-                    uart_data.append(preper_data[i][8:])
-                    for j in range(groups):
-                        etalons.append(preper_data[i + j])
-                    i += groups + 1
 
 
 
@@ -137,8 +80,6 @@ def recive_pp():
                             change_adreses.append(int(preper_data[i + j], 2))
                         i += count_number_chanches - 1
                         print(change_adreses)
-
-
                         for mod in range(modifications):
                             for j in range(count_number_chanches):
                                 preper_data[modification_point + change_adreses[j]] = preper_data[
@@ -150,6 +91,7 @@ def recive_pp():
                             uart_data_t, etal_t = modificated(preper_data, new_i, limited_point)
                             uart_data_step.append(uart_data_t)
                             etalon_step.append(etal_t)
+
 
 
                     if preper_data[i-1][8:] == '00000001':  # закон сдвигов
@@ -211,67 +153,9 @@ def recive_pp():
                     uart_data.append(uart_data_step)
                     etalons.append(etalon_step)
 
-                    for mod in range(modifications):
-                        in_process = 0
-                        while new_i <= limited_point:
-                            if preper_data[new_i][5:] == '11111111111':  # it means FG
-                                if (preper_data[new_i][1:4] == '000') and in_process == 0:  # it means mode 000
-                                    in_process = 1
-                                    uart_data.append('10000010')  # reset
-                                    uart_data.append('10100100')  # byte to say
-                                    uart_data.append('11111111')  # first byte of 1 reg
-                                    uart_data.append(
-                                        '0' + preper_data[new_i+1][11] + preper_data[new_i+1][9:11] + preper_data[new_i+1][12] +
-                                        preper_data[new_i + 1][
-                                            13] + preper_data[new_i + 1][14:])
-                                    uart_data.append(preper_data[new_i + 2][0:8])
-                                    uart_data.append(preper_data[new_i + 2][8:])
-                                    uart_data.append(preper_data[new_i + 3][0:8])
-                                    uart_data.append(preper_data[new_i + 3][8:])
-                                    new_i = new_i + 3
 
-                                if (preper_data[new_i][1:4] == '001') and in_process == 0:  # it means mode 001
-                                    in_process = 1
-                                    groups = int(preper_data[new_i + 1], 2) * 5
-                                    new_i += 2
-                                    uart_data.append('10010100')  # byte to say
-                                    uart_data.append(hex2bin(str(hex(groups)), 16)[8:])
-                                    uart_data.append('00000000')  # initial adr memory
-                                    uart_data.append('00000001')
-                                    for j in range(groups):
-                                        uart_data.append(preper_data[new_i + j][0:8])
-                                        uart_data.append(preper_data[new_i + j][8:])
-                                    new_i += groups - 1
 
-                                if (preper_data[new_i][1:4] == '010') and in_process == 0:  # it means mode 010
-                                    in_process = 1
-                                    groups = int(preper_data[new_i + 1], 2) * 3
-                                    new_i += 2
-                                    uart_data.append('10000001')  # start
-                                    uart_data.append('10011000')  # read memory
-                                    uart_data.append(hex2bin(str(hex(groups)), 16)[8:])
-                                    uart_data.append('00000000')  # initial adr memory
-                                    uart_data.append('00000001')
-                                    for j in range(groups):
-                                        etalons.append(preper_data[new_i + j])
-                                    new_i += groups
 
-                                if (preper_data[new_i][1:4] == '011') and in_process == 0:  # it means mode 011
-                                    in_process = 1
-                                    groups = int(preper_data[new_i + 1], 2) * 3
-                                    new_i += 2
-                                    uart_data.append('10000001')  # start
-                                    uart_data.append('10011000')  # read memory
-                                    uart_data.append(hex2bin(str(hex(groups)), 16)[8:])
-                                    uart_data.append(preper_data[new_i][0:8])  # initial adr memory
-                                    uart_data.append(preper_data[new_i][8:])
-                                    for j in range(groups):
-                                        etalons.append(preper_data[new_i + j])
-                                    new_i += groups + 1
-                            new_i += 1
-                            in_process = 0
-                limited = False
-            i += 1
             in_process = 0
             uart_data_etaps[etap] = uart_data
             etalons_dick[etap] = etalons
