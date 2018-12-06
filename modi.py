@@ -35,7 +35,6 @@ def recive_pp():
         limited = False
         modifications = None
         limited_point = 0
-        print('etap', etap)
 
         while i < all_data:
 
@@ -63,29 +62,28 @@ def recive_pp():
             if (limited == 1):
                 steps = int(preper_data[i][0:7], 2)
                 modifications = int(preper_data[i][7:], 2)
+                print('steps', etap, steps, preper_data[i])
                 i += 2
                 new_i = modification_point
 
                 for step in range(steps):
                     uart_data_step = []
                     etalon_step = []
+
                     if preper_data[i - 1][8:] == '00000000':  # табличный закон
                         count_number_chanches = int(preper_data[i][0:4], 2)  # количество измененей
                         change_adreses = []
-                        #preper_data[modification_point + int(preper_data[i][10:], 2)] = preper_data[
-                         #   i + count_number_chanches]
                         change_adreses.append(int(preper_data[i][10:], 2))
                         i += 1
                         for j in range(count_number_chanches - 1):
                             change_adreses.append(int(preper_data[i + j], 2))
                         i += count_number_chanches - 1
-                        print(change_adreses)
+
+
                         for mod in range(modifications):
                             for j in range(count_number_chanches):
                                 preper_data[modification_point + change_adreses[j]] = preper_data[
                                     i + j]
-                                print(modification_point + change_adreses[j], preper_data[
-                                    i + j])
                             i += count_number_chanches
 
                             uart_data_t, etal_t = modificated(preper_data, new_i, limited_point)
@@ -97,48 +95,32 @@ def recive_pp():
                     if preper_data[i-1][8:] == '00000001':  # закон сдвигов
                         slova = int(preper_data[i][0:4], 2)
                         upr_slovo = preper_data[i + slova]
+
                         if upr_slovo[13] == '0':
                             rotation = -int(upr_slovo[9:13], 2)
                         else:
                             rotation = int(upr_slovo[9:12], 2)
 
-                        if upr_slovo[6] == '0':  # циклический сдвиг
-                            slovo_deq = deque(preper_data[modification_point + int(preper_data[i][4:], 2)])
-                            slovo_deq.rotate(rotation)
-                            preper_data[modification_point + int(preper_data[i][4:], 2)] = ''.join(slovo_deq)
-                            i += 1
-                            for slovo in range(slova):
-                                slovo_deq = deque(preper_data[modification_point + int(preper_data[i][4:], 2) + slovo])
-                                slovo_deq.rotate(rotation)
-                                preper_data[modification_point + int(preper_data[i][4:], 2) + slovo] = ''.join(
-                                    slovo_deq)
-                            i += slova + 1
-
-                        if upr_slovo[6] == '1':  # логический сдвиг вправо
-                            if rotation > 0:
+                        for mod in range(modifications):
+                            print(i)
+                            if upr_slovo[6] == '0':  # циклический сдвиг
                                 slovo_deq = deque(preper_data[modification_point + int(preper_data[i][4:], 2)])
                                 slovo_deq.rotate(rotation)
-                                slovo_lis = list(slovo_deq)
-                                slovo_lis[:rotation] = '0' * rotation
-                                preper_data[modification_point + int(preper_data[i][4:], 2)] = ''.join(slovo_lis)
+                                preper_data[modification_point + int(preper_data[i][4:], 2)] = ''.join(slovo_deq)
                                 i += 1
                                 for slovo in range(slova):
-                                    slovo_deq = deque(
-                                        preper_data[modification_point + int(preper_data[i][4:], 2) + slovo])
+                                    slovo_deq = deque(preper_data[modification_point + int(preper_data[i][4:], 2) + slovo])
                                     slovo_deq.rotate(rotation)
-                                    slovo_lis = list(slovo_deq)
-                                    slovo_lis[:rotation] = '0' * rotation
                                     preper_data[modification_point + int(preper_data[i][4:], 2) + slovo] = ''.join(
-                                        slovo_lis)
-                                i += slova + 1
+                                        slovo_deq)
+                                i -= 4
 
-                            else:
-                                if upr_slovo[6] == '1':  # логический сдвиг влево
+                            if upr_slovo[6] == '1':  # логический сдвиг вправо
+                                if rotation > 0:
                                     slovo_deq = deque(preper_data[modification_point + int(preper_data[i][4:], 2)])
                                     slovo_deq.rotate(rotation)
                                     slovo_lis = list(slovo_deq)
-
-                                    slovo_lis[rotation:] = '0' * -rotation
+                                    slovo_lis[:rotation] = '0' * rotation
                                     preper_data[modification_point + int(preper_data[i][4:], 2)] = ''.join(slovo_lis)
                                     i += 1
                                     for slovo in range(slova):
@@ -146,13 +128,40 @@ def recive_pp():
                                             preper_data[modification_point + int(preper_data[i][4:], 2) + slovo])
                                         slovo_deq.rotate(rotation)
                                         slovo_lis = list(slovo_deq)
-                                        slovo_lis[rotation:] = '0' * -rotation
+                                        slovo_lis[:rotation] = '0' * rotation
                                         preper_data[modification_point + int(preper_data[i][4:], 2) + slovo] = ''.join(
                                             slovo_lis)
-                                    i += slova + 1
+                                    i -= 4
+
+                                else:
+                                    if upr_slovo[6] == '1':  # логический сдвиг влево
+                                        slovo_deq = deque(preper_data[modification_point + int(preper_data[i][4:], 2)])
+                                        slovo_deq.rotate(rotation)
+                                        slovo_lis = list(slovo_deq)
+
+                                        slovo_lis[rotation:] = '0' * -rotation
+                                        preper_data[modification_point + int(preper_data[i][4:], 2)] = ''.join(slovo_lis)
+                                        i += 1
+                                        for slovo in range(slova):
+                                            slovo_deq = deque(
+                                                preper_data[modification_point + int(preper_data[i][4:], 2) + slovo])
+                                            slovo_deq.rotate(rotation)
+                                            slovo_lis = list(slovo_deq)
+                                            slovo_lis[rotation:] = '0' * -rotation
+                                            preper_data[modification_point + int(preper_data[i][4:], 2) + slovo] = ''.join(
+                                                slovo_lis)
+                                        i -= 4
+
+                            i += slova + 1
+
+                            uart_data_t, etal_t = modificated(preper_data, new_i, limited_point)
+                            uart_data_step.append(uart_data_t)
+                            etalon_step.append(etal_t)
+                        i += 2
+
                     uart_data.append(uart_data_step)
                     etalons.append(etalon_step)
-
+                    i += 1
 
 
 
