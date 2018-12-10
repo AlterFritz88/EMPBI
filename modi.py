@@ -51,8 +51,9 @@ def recive_pp():
                     shift = int(preper_data[i], 2)
                     preper_data[shift] = preper_data[i+1]
                     i += 2
+                preper_data = preper_data[i:]
 
-            uart_data_t, etalons_t, i, limited, limited_point, modification_point = non_modificated(preper_data, i, all_data, limited)
+            uart_data_t, etalons_t, i, limited, limited_point, modification_point = non_modificated(preper_data, 0, len(preper_data), limited)
             uart_data.append(uart_data_t)
             etalons.append(etalons_t)
 
@@ -62,11 +63,14 @@ def recive_pp():
             if (limited == 1):
                 steps = int(preper_data[i][0:7], 2)
                 modifications = int(preper_data[i][7:], 2)
-                print('steps', etap, steps, preper_data[i])
                 i += 2
                 new_i = modification_point
 
                 for step in range(steps):
+                    if step > 0:
+                        modifications = int(preper_data[i-1][7:], 2)
+                        i += 1
+
                     uart_data_step = []
                     etalon_step = []
 
@@ -85,8 +89,7 @@ def recive_pp():
                                 preper_data[modification_point + change_adreses[j]] = preper_data[
                                     i + j]
                             i += count_number_chanches
-
-                            uart_data_t, etal_t = modificated(preper_data, new_i, limited_point)
+                            uart_data_t, etal_t = modificated(preper_data, 0, limited_point)
                             uart_data_step.append(uart_data_t)
                             etalon_step.append(etal_t)
 
@@ -102,7 +105,7 @@ def recive_pp():
                             rotation = int(upr_slovo[9:12], 2)
 
                         for mod in range(modifications):
-                            print(i)
+
                             if upr_slovo[6] == '0':  # циклический сдвиг
                                 slovo_deq = deque(preper_data[modification_point + int(preper_data[i][4:], 2)])
                                 slovo_deq.rotate(rotation)
@@ -154,7 +157,8 @@ def recive_pp():
 
                             i += slova + 1
 
-                            uart_data_t, etal_t = modificated(preper_data, new_i, limited_point)
+
+                            uart_data_t, etal_t = modificated(preper_data, 0, limited_point)
                             uart_data_step.append(uart_data_t)
                             etalon_step.append(etal_t)
                         i += 2
@@ -162,7 +166,7 @@ def recive_pp():
                     uart_data.append(uart_data_step)
                     etalons.append(etalon_step)
                     i += 1
-
+            i = all_data + 1
 
 
             in_process = 0

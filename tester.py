@@ -8,6 +8,10 @@ for k, v in to_send.items():
     print(k, to_send[k])
 
 
+print(len(to_send[1][1]), len(to_send[70]))
+
+
+
 
 
 for i in range(len(to_send[1][1][0])):

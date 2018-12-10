@@ -6,6 +6,7 @@ def modificated(preper_data, new_i, limited_point):
     etalons = []
     in_process = 0
     while new_i <= limited_point:
+        print(new_i)
         if preper_data[new_i][5:] == '11111111111':  # it means FG
             if (preper_data[new_i][1:4] == '000') and in_process == 0:  # it means mode 000
                 in_process = 1
@@ -23,6 +24,7 @@ def modificated(preper_data, new_i, limited_point):
                 new_i = new_i + 3
 
             if (preper_data[new_i][1:4] == '001') and in_process == 0:  # it means mode 001
+                print('mode 001')
                 in_process = 1
                 groups = int(preper_data[new_i + 1], 2) * 5
                 new_i += 2
@@ -36,6 +38,7 @@ def modificated(preper_data, new_i, limited_point):
                 new_i += groups - 1
 
             if (preper_data[new_i][1:4] == '010') and in_process == 0:  # it means mode 010
+                print('here')
                 in_process = 1
                 groups = int(preper_data[new_i + 1], 2) * 3
                 new_i += 2
@@ -50,6 +53,7 @@ def modificated(preper_data, new_i, limited_point):
 
             if (preper_data[new_i][1:4] == '011') and in_process == 0:  # it means mode 011
                 in_process = 1
+                print('here')
                 groups = int(preper_data[new_i + 1], 2) * 3
                 new_i += 2
                 uart_data.append('10000001')  # start
@@ -62,7 +66,7 @@ def modificated(preper_data, new_i, limited_point):
                 new_i += groups + 1
         new_i += 1
         in_process = 0
-        return uart_data, etalons
+    return uart_data, etalons
 
 
 
