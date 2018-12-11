@@ -3,9 +3,9 @@ import time
 from modi import recive_pp
 #sudo chmod a+rw /dev/tty
 
-def etap_processor(data, etap, step, mod=None):
+def etap_processor(etalons, data, etap, step, mod=None):
     data_b = [bytes([int(x, 2)]) for x in data]
-    etalon = len(etalons[etap]) * 2
+    etalon = len(etalons) * 2
     answer_etap = []
     for inf in data_b:
         if inf == b'\x81':
@@ -27,19 +27,22 @@ ser = serial.Serial('/dev/ttyUSB0', baudrate=1000000)
 
 answer = []
 to_send, etalons, etaps = recive_pp()
-
+print(etalons)
 
 for etap in etaps:
     data_temp = to_send[etap]
+    etalon = etalons[etap]
 
     for step in range(len(data_temp)):
 
         if type(data_temp[step][0]) == str:
             print(etap, step, data_temp[step])
-            answer.append(etap_processor(data_temp[step],etap, step))
+            etalon_s_e = etalon[step]
+            answer.append(etap_processor(etalon_s_e, data_temp[step],etap, step))
         else:
             for mod in range(len(data_temp[step])):
                 print(etap, step, mod, data_temp[step][mod])
-                answer.append(etap_processor(data_temp[step][mod], etap, step, mod))
+                etalon_s_e = etalon[step][mod]
+                answer.append(etap_processor(etalon_s_e, data_temp[step][mod], etap, step, mod))
 
 print(answer)
