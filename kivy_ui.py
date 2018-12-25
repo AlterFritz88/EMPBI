@@ -27,6 +27,13 @@ class EMPBI(App):
     def print_out(self):
         print(self.count_cirkles)
 
+    def do_program(self):
+        from driver import do_prog
+        response = []
+        for i in range(self.count_cirkles):
+            response.append(do_prog())
+
+
 
 
 

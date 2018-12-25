@@ -10,7 +10,7 @@
         GeneralOptions:
             id:         _general_options
             height: 40
-            width:  700
+            width:  1000
             size_hint: None, None
 
 
@@ -33,11 +33,14 @@
     padding:        2
     height: 48
 
+
+
     Button:
-        id: btn
+        id: btn1
         text: 'Контроль'
         on_release: dropdown1.open(self)
         height: '48dp'
+
 
         DropDown:
             id: dropdown1
@@ -60,22 +63,287 @@
                 size_hint_y: None
                 height: '48dp'
                 on_release: dropdown1.select('Вып')
+                on_press:   app.do_program()
             Button:
                 text: 'Печать'
                 size_hint_y: None
                 height: '48dp'
                 on_release: dropdown1.select('Печать')
-            Button:
-                text: 'Выход'
-                size_hint_y: None
-                height: '48dp'
-                on_release: dropdown1.select('Выход')
-                on_press:   app.stop()
-
-
 
     Button:
         text: 'Отладка'
+        on_release: dropdown2.open(self)
+        height: '48dp'
+        id: btn2
+        DropDown:
+            id: dropdown2
+
+            Button:
+                text: 'ЭтНач'
+                size_hint_y: None
+                height: '48dp'
+                on_release: dropdown2.select('ЭтНач')
+                on_press:   app.print_out()
+
+            Button:
+                text: 'ЭтКон'
+                size_hint_y: None
+                height: '48dp'
+                on_release: dropdown2.select('ЭтКон')
+                on_press:   F.Count_circle().open()
+            Button:
+                text: 'Шаг'
+                size_hint_y: None
+                height: '48dp'
+                on_release: dropdown2.select('Шаг')
+            Button:
+                text: 'Модификация'
+                size_hint_y: None
+                height: '48dp'
+                on_release: dropdown2.select('Модификация')
+            Button:
+                text: 'Режим'
+                size_hint_y: None
+                height: '48dp'
+                on_release: dropdown2.select('Режим')
+            Button:
+                text: 'КолЦиклов'
+                size_hint_y: None
+                height: '48dp'
+                on_release: dropdown2.select('КолЦиклов')
+            Button:
+                text: 'Выполнить'
+                size_hint_y: None
+                height: '48dp'
+                on_release: dropdown2.select('Выполнить')
+
+    Button:
+        text: 'РучРеж'
+        on_release: dropdown3.open(self)
+        height: '48dp'
+        id: btn3
+        DropDown:
+            id: dropdown3
+
+            Button:
+                text: 'ОбнулУСО'
+                size_hint_y: None
+                height: '48dp'
+                on_release: dropdown3.select('ОбнулУСО')
+
+
+            Button:
+                text: 'ПускРГ'
+                size_hint_y: None
+                height: '48dp'
+                on_release: dropdown3.select('ПускРГ')
+
+            Button:
+                text: 'ПускЗУ'
+                size_hint_y: None
+                height: '48dp'
+                on_release: dropdown3.select('ПускЗУ')
+            Button:
+                text: 'ЦиклУСО_РГ'
+                size_hint_y: None
+                height: '48dp'
+                on_release: dropdown3.select('ЦиклУСО_РГ')
+            Button:
+                text: 'ЦиклПВМ_Мод'
+                size_hint_y: None
+                height: '48dp'
+                on_release: dropdown3.select('ЦиклПВМ_Мод')
+            Button:
+                text: 'УпрПрМод'
+                size_hint_y: None
+                height: '48dp'
+                on_release: dropdown3.select('УпрПрМод')
+            Button:
+                text: 'ИпуZup'
+                size_hint_y: None
+                height: '48dp'
+                on_release: dropdown3.select('ИпуZup')
+            Button:
+                text: 'УпрZup'
+                size_hint_y: None
+                height: '48dp'
+                on_release: dropdown3.select('УпрZup')
+    Button:
+        text: 'РучРеж'
+        on_release: dropdown3.open(self)
+        height: '48dp'
+        id: btn3
+        DropDown:
+            id: dropdown3
+
+            Button:
+                text: 'ОбнулУСО'
+                size_hint_y: None
+                height: '48dp'
+                on_release: dropdown3.select('ОбнулУСО')
+
+
+            Button:
+                text: 'ПускРГ'
+                size_hint_y: None
+                height: '48dp'
+                on_release: dropdown3.select('ПускРГ')
+
+            Button:
+                text: 'ПускЗУ'
+                size_hint_y: None
+                height: '48dp'
+                on_release: dropdown3.select('ПускЗУ')
+            Button:
+                text: 'ЦиклУСО_РГ'
+                size_hint_y: None
+                height: '48dp'
+                on_release: dropdown3.select('ЦиклУСО_РГ')
+            Button:
+                text: 'ЦиклПВМ_Мод'
+                size_hint_y: None
+                height: '48dp'
+                on_release: dropdown3.select('ЦиклПВМ_Мод')
+            Button:
+                text: 'УпрПрМод'
+                size_hint_y: None
+                height: '48dp'
+                on_release: dropdown3.select('УпрПрМод')
+            Button:
+                text: 'ИпуZup'
+                size_hint_y: None
+                height: '48dp'
+                on_release: dropdown3.select('ИпуZup')
+            Button:
+                text: 'УпрZup'
+                size_hint_y: None
+                height: '48dp'
+                on_release: dropdown3.select('УпрZup')
+    Button:
+        text: 'Высветка'
+        on_release: dropdown4.open(self)
+        height: '48dp'
+        id: btn4
+        DropDown:
+            id: dropdown4
+            Button:
+                text: 'КоордРег'
+                size_hint_y: None
+                height: '48dp'
+                on_release: dropdown4.select('КоордРег')
+            Button:
+                text: 'Чт/Зп Рг'
+                size_hint_y: None
+                height: '48dp'
+                on_release: dropdown4.select('Чт/Зп Рг')
+            Button:
+                text: 'КоордЗУ'
+                size_hint_y: None
+                height: '48dp'
+                on_release: dropdown4.select('КоордЗУ')
+            Button:
+                text: 'Чт/Зп ЗУ'
+                size_hint_y: None
+                height: '48dp'
+                on_release: dropdown4.select('Чт/Зп ЗУ')
+            Button:
+                text: 'ЧтБуфВыд'
+                size_hint_y: None
+                height: '48dp'
+                on_release: dropdown4.select('ЧтБуфВыд')
+            Button:
+                text: 'ЧтЭтапа'
+                size_hint_y: None
+                height: '48dp'
+                on_release: dropdown4.select('ЧтЭтапа')
+            Button:
+                text: 'ЧтННормДиск'
+                size_hint_y: None
+                height: '48dp'
+                on_release: dropdown4.select('ЧтННормДиск')
+            Button:
+                text: 'УпрZup'
+                size_hint_y: None
+                height: '48dp'
+                on_release: dropdown4.select('УпрZup')
+    Button:
+        text: 'Параметры'
+        on_release: dropdown5.open(self)
+        height: '48dp'
+        id: btn5
+        DropDown:
+            id: dropdown5
+            Button:
+                text: 'ОстНеисправность'
+                size_hint_y: None
+                height: '48dp'
+                on_release: dropdown5.select('КоордРег')
+            Button:
+                text: 'Пауза'
+                size_hint_y: None
+                height: '48dp'
+                on_release: dropdown5.select('Чт/Зп Рг')
+            Button:
+                text: 'БлокИндЭтапа'
+                size_hint_y: None
+                height: '48dp'
+                on_release: dropdown5.select('КоордЗУ')
+            Button:
+                text: 'ЗапрУСО'
+                size_hint_y: None
+                height: '48dp'
+                on_release: dropdown5.select('Чт/Зп ЗУ')
+            Button:
+                text: 'ПоэтапОСТ'
+                size_hint_y: None
+                height: '48dp'
+                on_release: dropdown5.select('ЧтБуфВыд')
+            Button:
+                text: 'ПошагОСТ'
+                size_hint_y: None
+                height: '48dp'
+                on_release: dropdown5.select('ЧтЭтапа')
+            Button:
+                text: 'МодОСТ'
+                size_hint_y: None
+                height: '48dp'
+                on_release: dropdown5.select('ЧтННормДиск')
+            Button:
+                text: 'ОстФГ'
+                size_hint_y: None
+                height: '48dp'
+                on_release: dropdown5.select('УпрZup')
+            Button:
+                text: 'ИндикацияСрав'
+                size_hint_y: None
+                height: '48dp'
+                on_release: dropdown5.select('УпрZup')
+            Button:
+                text: 'Блок КПН'
+                size_hint_y: None
+                height: '48dp'
+                on_release: dropdown5.select('УпрZup')
+            Button:
+                text: 'Блок ДСЧ'
+                size_hint_y: None
+                height: '48dp'
+                on_release: dropdown5.select('УпрZup')
+            Button:
+                text: 'ЗапННДиск'
+                size_hint_y: None
+                height: '48dp'
+                on_release: dropdown5.select('УпрZup')
+            Button:
+                text: 'БлокZUP'
+                size_hint_y: None
+                height: '48dp'
+                on_release: dropdown5.select('УпрZup')
+    Button:
+        text: 'Выход'
+        height: '48dp'
+        id: exit_button
+        on_press:   app.stop()
+
 
 
 <Out_info@AnchorLayout>:
