@@ -23,7 +23,7 @@ def etap_processor(etalons, data, etap, step, mod=None):
     else:
         return (etap, step, mod), answer_etap
 
-ser = serial.Serial('/dev/ttyUSB0', baudrate=1000000)
+ser = serial.Serial('/dev/ttyUSB0', baudrate=1000000, timeout=0.5)
 
 answer = []
 to_send, etalons, etaps = recive_pp()

@@ -1,0 +1,117 @@
+#:import F kivy.factory.Factory
+
+
+<Main>:
+    AnchorLayout:
+        anchor_x:   'left'
+        anchor_y:   'top'
+
+
+        GeneralOptions:
+            id:         _general_options
+            height: 40
+            width:  700
+            size_hint: None, None
+
+
+    AnchorLayout:
+        id:     _222
+        anchor_x:   'center'
+        anchor_y:   'bottom'
+
+        Out_info:
+            id:     _label
+            size_hint: None, None
+            width:      root.width - _general_options.width
+            height:     root.height - _general_options.height
+
+
+
+
+<GeneralOptions@BoxLayout>:
+    orientation:    'horizontal'
+    padding:        2
+    height: 48
+
+    Button:
+        id: btn
+        text: 'Контроль'
+        on_release: dropdown1.open(self)
+        height: '48dp'
+
+        DropDown:
+            id: dropdown1
+
+            Button:
+                text: 'Режим'
+                size_hint_y: None
+                height: '48dp'
+                on_release: dropdown1.select('Режим')
+                on_press:   app.print_out()
+
+            Button:
+                text: 'КолЦикл'
+                size_hint_y: None
+                height: '48dp'
+                on_release: dropdown1.select('КолЦикл')
+                on_press:   F.Count_circle().open()
+            Button:
+                text: 'Вып'
+                size_hint_y: None
+                height: '48dp'
+                on_release: dropdown1.select('Вып')
+            Button:
+                text: 'Печать'
+                size_hint_y: None
+                height: '48dp'
+                on_release: dropdown1.select('Печать')
+            Button:
+                text: 'Выход'
+                size_hint_y: None
+                height: '48dp'
+                on_release: dropdown1.select('Выход')
+                on_press:   app.stop()
+
+
+
+    Button:
+        text: 'Отладка'
+
+
+<Out_info@AnchorLayout>:
+    text:   'sdsd'
+    Label:
+        id:     mail_label
+        markup: True
+        text:   '22323'
+
+
+<Count_circle@Popup>
+    id:        amount_circle
+    title:     "Ввод циклов"
+    size:       (400, 200)
+    size_hint : (None,None)
+    BoxLayout:
+        orientation: "vertical"
+        size:       (200, 120)
+        size_hint:  (None, None)
+
+        Label:
+            text: "Введите количество циклов"
+            size_hint:  (1, 0.2)
+
+        TextInput:
+            id: count_circle
+            size_hint:  (1, 0.2)
+            text: ""
+
+        Button:
+            size_hint:  (1, 0.2)
+            text:           "Подтвердить"
+            on_release:     app.count_cirkles = int(count_circle.text)
+        Button:
+            size_hint:  (1, 0.2)
+            text:           "ОК"
+            on_release:     amount_circle.dismiss()
+
+
