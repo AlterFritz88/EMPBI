@@ -2,6 +2,7 @@
 
 
 <Main>:
+    id:     _main
     AnchorLayout:
         anchor_x:   'left'
         anchor_y:   'top'
@@ -16,8 +17,8 @@
 
     AnchorLayout:
         id:     _222
-        anchor_x:   'center'
-        anchor_y:   'bottom'
+        anchor_x:   'right'
+        anchor_y:   'top'
 
         Out_info:
             id:     _label
@@ -346,40 +347,69 @@
 
 
 
-<Out_info@AnchorLayout>:
-    text:   'sdsd'
-    Label:
-        id:     mail_label
-        markup: True
-        text:   '22323'
+<Out_info@BoxLayout>:
+    orientation: "vertical"
+    size:       (200, 120)
+    size_hint:  (None, None)
+
+
+
+
+
+    BoxLayout:
+        orientation: "horizontal"
+        size:       (200, 120)
+        size_hint:  (None, None)
+
+        Label:
+            text:   'Факт. значение'
+            markup: True
+        Label:
+            text:   'Эталон'
+            markup: True
+        Label:
+            text:   'Доп'
+            markup: True
+
+
 
 
 <Count_circle@Popup>
     id:        amount_circle
     title:     "Ввод циклов"
-    size:       (400, 200)
+    size:       (450, 200)
     size_hint : (None,None)
+
     BoxLayout:
-        orientation: "vertical"
+        orientation: "horizontal"
         size:       (200, 120)
         size_hint:  (None, None)
+        BoxLayout:
+            orientation: "vertical"
+            size:       (200, 120)
+            size_hint:  (None, None)
+
+            Label:
+                text: "Введите количество циклов"
+                size_hint:  (1, 0.2)
+
+            TextInput:
+                id: count_circle
+                size_hint:  (1, 0.2)
+                text: ""
+
+            Button:
+                size_hint:  (1, 0.2)
+                text:           "Подтвердить"
+                on_release:     app.count_cirkles = int(count_circle.text)
+                on_release:     amount_circle.dismiss()
+
 
         Label:
-            text: "Введите количество циклов"
-            size_hint:  (1, 0.2)
-
-        TextInput:
-            id: count_circle
-            size_hint:  (1, 0.2)
-            text: ""
-
-        Button:
-            size_hint:  (1, 0.2)
-            text:           "Подтвердить"
-            on_release:     app.count_cirkles = int(count_circle.text)
-        Button:
-            size_hint:  (1, 0.2)
-            text:           "ОК"
-            on_release:     amount_circle.dismiss()
+            id:     count_cirkles_label
+            markup: True
+            size_hint:  (None, None)
+            size:       (200, 120)
+            text:   'Текущее кол-во циклов:\n' + str(app.count_cirkles)
 
 
