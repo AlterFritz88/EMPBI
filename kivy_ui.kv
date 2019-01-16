@@ -1,4 +1,7 @@
 #:import F kivy.factory.Factory
+#:import ListAdapter kivy.adapters.listadapter.ListAdapter
+#:import sla kivy.adapters.simplelistadapter
+#:import label kivy.uix.label
 
 
 <Main>:
@@ -17,14 +20,15 @@
 
     AnchorLayout:
         id:     _222
-        anchor_x:   'right'
+        anchor_x:   'center'
         anchor_y:   'top'
 
         Out_info:
             id:     _label
             size_hint: None, None
-            width:      root.width - _general_options.width
-            height:     root.height - _general_options.height
+            #width:      root.width - _general_options.width
+            #height:     root.height - _general_options.height
+
 
 
 
@@ -36,7 +40,9 @@
 
 
 
+
     Button:
+        dd_level: dd_level.__self__
         id: btn1
         text: 'Контроль'
         on_release: dropdown1.open(self)
@@ -64,7 +70,9 @@
                 size_hint_y: None
                 height: '48dp'
                 on_release: dropdown1.select('Вып')
-                on_press:   app.do_program()
+                on_press:   app.upd_ltxt()
+                id: dd_level
+
             Button:
                 text: 'Печать'
                 size_hint_y: None
@@ -343,22 +351,21 @@
         text: 'Выход'
         height: '48dp'
         id: exit_button
+        #on_press:   app.upd_ltxt()
         on_press:   app.stop()
 
 
 
 <Out_info@BoxLayout>:
     orientation: "vertical"
-    size:       (200, 120)
+    size:       (200, 420)
     size_hint:  (None, None)
-
-
-
+    id:         label_show
 
 
     BoxLayout:
         orientation: "horizontal"
-        size:       (200, 120)
+        size:       (600, 120)
         size_hint:  (None, None)
 
         Label:
@@ -368,8 +375,46 @@
             text:   'Эталон'
             markup: True
         Label:
-            text:   'Доп'
+            text:   'Допуск'
             markup: True
+        Label:
+            text:   'Норма/Не Норма'
+            markup: True
+            
+
+    BoxLayout:
+        orientation: "horizontal"
+        size:       (600, 170)
+        size_hint:  (None, None)
+
+        ListView:
+            size_hint_y: 1
+            id:     _income_data
+            adapter:
+                sla.SimpleListAdapter(
+                data=[],
+                cls=label.Label)
+        ListView:
+            size_hint_y: 1
+            id:     _etalon_data
+            adapter:
+                sla.SimpleListAdapter(
+                data=[],
+                cls=label.Label)
+        ListView:
+            size_hint_y: 1
+            adapter:
+                sla.SimpleListAdapter(
+                data=app.my_data,
+                cls=label.Label)
+        ListView:
+            size_hint_y: 1
+            adapter:
+                sla.SimpleListAdapter(
+                data=app.my_data,
+                cls=label.Label)
+
+
 
 
 
