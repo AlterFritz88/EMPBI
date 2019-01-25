@@ -9,7 +9,6 @@ from kivy.uix.dropdown import DropDown
 from kivy.clock import Clock
 from driver import do_prog, get_info_for_send, etap_processor
 import time
-
 import threading
 
 
@@ -22,47 +21,61 @@ class Main(AnchorLayout):
 class Control(BoxLayout):
     pass
 
-a = 'ОБОЛОЧКА'
 class EMPBI(App):
-    import time
     #self.root.ids._label.ids.mail_label.text = str(app.time.time())
     count_cirkles = 1
     my_data = []
     screen_data =[]
     screen_etalons = []
+    srav_res = []
     potok = None
+    pause_time = 0.1
+    etap_nach = 1
+    etap_kon = 1
+    shag = 0
+    mod = 0
+    rezim = 1
+    cycles = 1
+
 
     def build(self):
         #Main.ids._label.ids.mail_label.text = str(self.time.time())
+        #print(Main.ids)
 
-        #Clock.schedule_interval(self.show, 0.1)
-        #print(Main.ids._main)
-        #Clock.schedule_interval(self.do_program, 0.5)
+
+
         return Main()
 
 
     def print_out(self):
         print(self.count_cirkles)
-        print(self.root.ids._label.ids._data.adapter.data)
+        print(self.root.ids)
 
 
     def do_program(self):
-        co = 0
         data = get_info_for_send()
 
         for i in range(self.count_cirkles):
             for j in data:
-
                 get_ans = etap_processor(j[-1], j[1])
                 self.screen_data = get_ans
-                self.screen_etalons = [x + str(time.time()) for x in j[-1]]
-                time.sleep(0.3)
-                print('count do:', co)
-                print(get_ans)
-                co += 1
+                self.screen_etalons =  j[-1]
+                self.srav_res = ['Норма' if x == y else 'Не норма' for x, y in zip(self.screen_data,self.screen_etalons)]
 
-                #Clock.schedule_interval(self.show, 0.1)
+                time.sleep(self.pause_time)
+                print(get_ans)
                 self.show()
+
+    def do_otladka(self):
+        self.etap_nach = self.check_enter(self.root.ids._etap_info.ids._etap_nach.text)
+        self.etap_kon = self.check_enter(self.root.ids._etap_info.ids._etap_kon.text)
+        self.shag  = self.check_enter(self.root.ids._etap_info.ids._shag.text)
+        self.mod = self.check_enter(self.root.ids._etap_info.ids._mod.text)
+        self.rezim = self.check_enter(self.root.ids._etap_info.ids._rezim.text)
+        self.cycles = self.check_enter(self.root.ids._etap_info.ids._cycles.text)
+
+
+
 
 
 
@@ -78,15 +91,16 @@ class EMPBI(App):
     def show(self):
         self.root.ids._label.ids._income_data.adapter.data = self.screen_data
         self.root.ids._label.ids._etalon_data.adapter.data = self.screen_etalons
+        self.root.ids._label.ids._result.adapter.data = self.srav_res
         print('показываю')
         #print(self.root.ids._label.ids._income_data.adapter.data)
 
 
-    #done(data, self.count_cirkles)
-
-
-
-
+    def check_enter(self, string):
+        if len(string) > 0:
+            return int(string)
+        else:
+            return 1
 
 
 

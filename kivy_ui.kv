@@ -5,11 +5,10 @@
 
 
 <Main>:
-    id:     _main
+    #id:     _main
     AnchorLayout:
         anchor_x:   'left'
         anchor_y:   'top'
-
 
         GeneralOptions:
             id:         _general_options
@@ -19,15 +18,30 @@
 
 
     AnchorLayout:
-        id:     _222
-        anchor_x:   'center'
-        anchor_y:   'top'
+        anchor_x:   'left'
+        anchor_y:   'center'
 
-        Out_info:
-            id:     _label
-            size_hint: None, None
-            #width:      root.width - _general_options.width
-            #height:     root.height - _general_options.height
+        BoxLayout:
+            id: _main_screen
+            orientation: "horizontal"
+            size:       (600, 400)
+            size_hint:  (None, -0.3)
+
+            Etap_info:
+                id:     _etap_info
+                size_hint: None, None
+
+
+
+            Out_info:
+                id:     _label
+                size_hint: None, None
+                #width:      root.width - _general_options.width
+                #height:     root.height - _general_options.height
+
+
+
+
 
 
 
@@ -39,13 +53,16 @@
     height: 48
 
 
-
-
     Button:
-        dd_level: dd_level.__self__
+        dd_1: dd_1.__self__
+        dd_2: dd_2.__self__
+        dd_4: dd_4.__self__
+        dd_5: dd_5.__self__
+        dd_6: dd_6.__self__
         id: btn1
         text: 'Контроль'
         on_release: dropdown1.open(self)
+        on_press: app.root.ids._etap_info.visible = False
         height: '48dp'
 
 
@@ -71,7 +88,7 @@
                 height: '48dp'
                 on_release: dropdown1.select('Вып')
                 on_press:   app.upd_ltxt()
-                id: dd_level
+                id: dd_1
 
             Button:
                 text: 'Печать'
@@ -81,7 +98,10 @@
 
     Button:
         text: 'Отладка'
-        on_release: dropdown2.open(self)
+        #on_release: dropdown2.open(self)
+        #on_press:   F.Test_menu().open()
+
+        on_press: app.root.ids._etap_info.visible = True
         height: '48dp'
         id: btn2
         DropDown:
@@ -93,6 +113,7 @@
                 height: '48dp'
                 on_release: dropdown2.select('ЭтНач')
                 on_press:   app.print_out()
+                id: dd_2
 
             Button:
                 text: 'ЭтКон'
@@ -126,9 +147,11 @@
                 height: '48dp'
                 on_release: dropdown2.select('Выполнить')
 
+
     Button:
         text: 'РучРеж'
         on_release: dropdown3.open(self)
+        on_press: app.root.ids._etap_info.visible = False
         height: '48dp'
         id: btn3
         DropDown:
@@ -139,57 +162,7 @@
                 size_hint_y: None
                 height: '48dp'
                 on_release: dropdown3.select('ОбнулУСО')
-
-
-            Button:
-                text: 'ПускРГ'
-                size_hint_y: None
-                height: '48dp'
-                on_release: dropdown3.select('ПускРГ')
-
-            Button:
-                text: 'ПускЗУ'
-                size_hint_y: None
-                height: '48dp'
-                on_release: dropdown3.select('ПускЗУ')
-            Button:
-                text: 'ЦиклУСО_РГ'
-                size_hint_y: None
-                height: '48dp'
-                on_release: dropdown3.select('ЦиклУСО_РГ')
-            Button:
-                text: 'ЦиклПВМ_Мод'
-                size_hint_y: None
-                height: '48dp'
-                on_release: dropdown3.select('ЦиклПВМ_Мод')
-            Button:
-                text: 'УпрПрМод'
-                size_hint_y: None
-                height: '48dp'
-                on_release: dropdown3.select('УпрПрМод')
-            Button:
-                text: 'ИпуZup'
-                size_hint_y: None
-                height: '48dp'
-                on_release: dropdown3.select('ИпуZup')
-            Button:
-                text: 'УпрZup'
-                size_hint_y: None
-                height: '48dp'
-                on_release: dropdown3.select('УпрZup')
-    Button:
-        text: 'РучРеж'
-        on_release: dropdown3.open(self)
-        height: '48dp'
-        id: btn3
-        DropDown:
-            id: dropdown3
-
-            Button:
-                text: 'ОбнулУСО'
-                size_hint_y: None
-                height: '48dp'
-                on_release: dropdown3.select('ОбнулУСО')
+                id: dd_4
 
 
             Button:
@@ -231,6 +204,7 @@
     Button:
         text: 'Высветка'
         on_release: dropdown4.open(self)
+        on_press: app.root.ids._etap_info.visible = False
         height: '48dp'
         id: btn4
         DropDown:
@@ -240,6 +214,7 @@
                 size_hint_y: None
                 height: '48dp'
                 on_release: dropdown4.select('КоордРег')
+                id: dd_5
             Button:
                 text: 'Чт/Зп Рг'
                 size_hint_y: None
@@ -278,6 +253,7 @@
     Button:
         text: 'Параметры'
         on_release: dropdown5.open(self)
+        on_press: app.root.ids._etap_info.visible = False
         height: '48dp'
         id: btn5
         DropDown:
@@ -287,11 +263,13 @@
                 size_hint_y: None
                 height: '48dp'
                 on_release: dropdown5.select('КоордРег')
+                id: dd_6
             Button:
                 text: 'Пауза'
                 size_hint_y: None
                 height: '48dp'
                 on_release: dropdown5.select('Чт/Зп Рг')
+                on_press:   F.Pause().open()
             Button:
                 text: 'БлокИндЭтапа'
                 size_hint_y: None
@@ -351,7 +329,6 @@
         text: 'Выход'
         height: '48dp'
         id: exit_button
-        #on_press:   app.upd_ltxt()
         on_press:   app.stop()
 
 
@@ -409,6 +386,7 @@
                 cls=label.Label)
         ListView:
             size_hint_y: 1
+            id:     _result
             adapter:
                 sla.SimpleListAdapter(
                 data=app.my_data,
@@ -442,11 +420,12 @@
                 id: count_circle
                 size_hint:  (1, 0.2)
                 text: ""
+                input_filter: 'int'
 
             Button:
                 size_hint:  (1, 0.2)
                 text:           "Подтвердить"
-                on_release:     app.count_cirkles = int(count_circle.text)
+                on_release:     app.count_cirkles = app.check_enter((count_circle.text))
                 on_release:     amount_circle.dismiss()
 
 
@@ -456,5 +435,157 @@
             size_hint:  (None, None)
             size:       (200, 120)
             text:   'Текущее кол-во циклов:\n' + str(app.count_cirkles)
+
+
+<Pause@Popup>
+    id:        pause_time
+    title:     "Время паузы"
+    size:       (450, 200)
+    size_hint : (None,None)
+
+    BoxLayout:
+        orientation: "horizontal"
+        size:       (200, 120)
+        size_hint:  (None, None)
+        BoxLayout:
+            orientation: "vertical"
+            size:       (200, 120)
+            size_hint:  (None, None)
+
+            Label:
+                text: "Время паузы в секундах"
+                size_hint:  (1, 0.2)
+
+            TextInput:
+                id: sleep_time
+                size_hint:  (1, 0.2)
+                text: ""
+                input_filter: 'int'
+
+            Button:
+                size_hint:  (1, 0.2)
+                text:           "Подтвердить"
+                on_release:     app.pause_time = app.check_enter((sleep_time.text))
+                on_release:     pause_time.dismiss()
+
+
+        Label:
+            id:     count_cirkles_label
+            markup: True
+            size_hint:  (None, None)
+            size:       (200, 120)
+            text:   'Текущяя пауза:\n' + str(app.pause_time)
+
+<Etap_info@BoxLayout>
+    orientation: "vertical"
+    size:       (300, 265)
+    size_hint:  (None, None)
+    visible: False
+    #size_hint_x: 1 if self.visible else 0
+    opacity: 1 if self.visible else 0
+    disabled: not self.visible
+
+    BoxLayout:
+        size:       (300, 120)
+        orientation: "horizontal"
+        size_hint:  (1, 1)
+        Label:
+            text: "ЭтНач"
+            size_hint:  (None, None)
+            size:       (120, 35)
+
+        TextInput:
+            id: _etap_nach
+            text: "1"
+            size_hint:  (None, None)
+            size:       (80, 35)
+            input_filter: 'int'
+    BoxLayout:
+        size:       (300, 120)
+        orientation: "horizontal"
+        size_hint:  (1, 1)
+        Label:
+            text: "ЭтКон"
+            size_hint:  (None, None)
+            size:       (120, 35)
+
+        TextInput:
+            id: _etap_kon
+            text: "1"
+            size_hint:  (None, None)
+            size:       (80, 35)
+            input_filter: 'int'
+    BoxLayout:
+        size:       (300, 120)
+        orientation: "horizontal"
+        size_hint:  (1, 1)
+        Label:
+            text: "Шаг"
+            size_hint:  (None, None)
+            size:       (120, 35)
+
+        TextInput:
+            id: _shag
+            text: "0"
+            size_hint:  (None, None)
+            size:       (80, 35)
+            input_filter: 'int'
+    BoxLayout:
+        size:       (300, 120)
+        orientation: "horizontal"
+        size_hint:  (1, 1)
+        Label:
+            text: "Мод"
+            size_hint:  (None, None)
+            size:       (120, 35)
+
+        TextInput:
+            id: _mod
+            text: "0"
+            size_hint:  (None, None)
+            size:       (80, 35)
+            input_filter: 'int'
+
+    BoxLayout:
+        size:       (300, 120)
+        orientation: "horizontal"
+        size_hint:  (1, 1)
+        Label:
+            text: "Режим"
+            size_hint:  (None, None)
+            size:       (120, 35)
+
+        TextInput:
+            id: _rezim
+            text: "0"
+            size_hint:  (None, None)
+            size:       (80, 35)
+            input_filter: 'int'
+    BoxLayout:
+        size:       (300, 120)
+        orientation: "horizontal"
+        size_hint:  (1, 1)
+        Label:
+            text: "Кол-во циклов"
+            size_hint:  (None, None)
+            size:       (120, 35)
+
+        TextInput:
+            id: _cycles
+            text: "1"
+            size_hint:  (None, None)
+            size:       (80, 35)
+            input_filter: 'int'
+
+
+    #disabled: not self.visible
+
+    Button:
+        id: _button_test
+        #size_hint:  (1, 0.2)
+        text:           "Выполнить"
+        #on_press: root.visible = False
+        on_press:     app.do_otladka()
+
 
 
