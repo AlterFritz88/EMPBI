@@ -73,6 +73,30 @@ class EMPBI(App):
         self.mod = self.check_enter(self.root.ids._etap_info.ids._mod.text)
         self.rezim = self.check_enter(self.root.ids._etap_info.ids._rezim.text)
         self.cycles = self.check_enter(self.root.ids._etap_info.ids._cycles.text)
+        data = get_info_for_send()
+        data_cut = []
+
+        counter = 1
+        for etap in range(len(data)):
+            print(data[etap])
+            if self.mod == 0 and self.shag > 0 and self.etap_kon == counter and data[etap][0][1] == self.shag+1:
+                break
+
+            if etap > 0:
+                if data[etap][0][0] != data[etap-1][0][0]:
+                    counter += 1
+                if counter in range(self.etap_nach, self.etap_kon+1):
+                    data_cut.append(data[etap])
+            if etap == 0:
+                if counter in range(self.etap_nach, self.etap_kon+1):
+                    data_cut.append(data[etap])
+            if self.mod != 0 and self.shag != 0:
+                if counter == self.etap_kon and data[etap][0][1] == self.shag and data[etap][0][2] == self.mod:
+                    break
+        for i in data_cut:
+            print(i)
+        print(data_cut)
+
 
 
 
