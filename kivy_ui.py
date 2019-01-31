@@ -36,6 +36,11 @@ class EMPBI(App):
     mod = 0
     rezim = 1
     cycles = 1
+    mod_indicate = 0
+    cycles_indicator = 1
+    shag_indicate = 0
+    etap_indicate = 1
+    norma = True
 
 
     def build(self):
@@ -56,14 +61,30 @@ class EMPBI(App):
         data = get_info_for_send()
 
         for i in range(self.count_cirkles):
-            for j in data:
-                get_ans = etap_processor(j[-1], j[1])
+            for j in range(len(data)):
+                get_ans = etap_processor(data[j][-1], data[j][1])
                 self.screen_data = get_ans
-                self.screen_etalons =  j[-1]
+                self.screen_etalons =  data[j][-1]
                 self.srav_res = ['Норма' if x == y else 'Не норма' for x, y in zip(self.screen_data,self.screen_etalons)]
-
                 time.sleep(self.pause_time)
-                print(get_ans)
+                if 'Не норма' in self.srav_res:
+                    self.norma = 'Не Норма'
+                else:
+                    self.norma = 'Норма'
+                self.cycles_indicator = i
+                if len(data[j][0]) > 2:
+                    self.mod_indicate = data[j][0][2]
+                else:
+                    self.mod_indicate = 0
+                self.shag_indicate = data[j][0][1]
+
+                if j == 0:
+                    init_etap = 1
+                else:
+                    if data[j][0][0] != data[j-1][0][0]:
+                        init_etap += 1
+                self.etap_indicate = init_etap
+                print(j)
                 self.show()
 
     def do_otladka(self):
@@ -95,7 +116,34 @@ class EMPBI(App):
                     break
         for i in data_cut:
             print(i)
-        print(data_cut)
+
+        for i in range(self.cycles):
+            for j in range(len(data_cut)):
+                get_ans = etap_processor(data_cut[j][-1], data_cut[j][1])
+                self.screen_data = get_ans
+                self.screen_etalons = data_cut[j][-1]
+                self.srav_res = ['Норма' if x == y else 'Не норма' for x, y in
+                                 zip(self.screen_data, self.screen_etalons)]
+                time.sleep(self.pause_time)
+                if 'Не норма' in self.srav_res:
+                    self.norma = 'Не Норма'
+                else:
+                    self.norma = 'Норма'
+                self.cycles_indicator = i
+                if len(data_cut[j][0]) > 2:
+                    self.mod_indicate = data_cut[j][0][2]
+                else:
+                    self.mod_indicate = 0
+                self.shag_indicate = data_cut[j][0][1]
+
+                if j == 0:
+                    init_etap = self.etap_nach
+                else:
+                    if data_cut[j][0][0] != data_cut[j - 1][0][0]:
+                        init_etap += 1
+                self.etap_indicate = init_etap
+                print(j)
+                self.show()
 
 
 
@@ -108,6 +156,9 @@ class EMPBI(App):
         self.potok = threading.Thread(target=self.do_program)
         self.potok.start()
 
+    def otladka(self):
+        self.potok = threading.Thread(target=self.do_otladka)
+        self.potok.start()
 
 
 
@@ -116,6 +167,11 @@ class EMPBI(App):
         self.root.ids._label.ids._income_data.adapter.data = self.screen_data
         self.root.ids._label.ids._etalon_data.adapter.data = self.screen_etalons
         self.root.ids._label.ids._result.adapter.data = self.srav_res
+        self.root.ids._indicate.ids._norma.text = self.norma
+        self.root.ids._indicate.ids._cycles_indicate.text = str(self.cycles_indicator + 1)
+        self.root.ids._indicate.ids._mod_indicate.text = str(self.mod_indicate)
+        self.root.ids._indicate.ids._shag_indicate.text = str(self.shag_indicate)
+        self.root.ids._indicate.ids._etap_indicate.text = str(self.etap_indicate)
         print('показываю')
         #print(self.root.ids._label.ids._income_data.adapter.data)
 

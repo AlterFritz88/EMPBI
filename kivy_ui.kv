@@ -39,7 +39,13 @@
                 #width:      root.width - _general_options.width
                 #height:     root.height - _general_options.height
 
+    AnchorLayout:
+        anchor_x:   'left'
+        anchor_y:   'bottom'
 
+        Indicate:
+            id:     _indicate
+            size_hint: None, None
 
 
 
@@ -585,7 +591,52 @@
         #size_hint:  (1, 0.2)
         text:           "Выполнить"
         #on_press: root.visible = False
-        on_press:     app.do_otladka()
+        on_press:     app.otladka()
 
+<Indicate@BoxLayout>:
+    orientation: "horizontal"
+    size:       (200, 420)
+    size_hint:  (None, None)
+    id:         _indicate
 
+    Label:
+        text: "Этап"
+        size_hint:  (None, None)
+        size:       (40, 35)
+    Label:
+        id: _etap_indicate
+        size_hint:  (None, None)
+        size:       (50, 35)
+
+    Label:
+        text: "Шаг"
+        size_hint:  (None, None)
+        size:       (30, 35)
+    Label:
+        id: _shag_indicate
+        size_hint:  (None, None)
+        size:       (70, 35)
+
+    Label:
+        text: "Мод"
+        size_hint:  (None, None)
+        size:       (20, 35)
+    Label:
+        id: _mod_indicate
+        size_hint:  (None, None)
+        size:       (70, 35)
+
+    Label:
+        text: "Цикл"
+        size_hint:  (None, None)
+        size:       (20, 35)
+    Label:
+        id: _cycles_indicate
+        size_hint:  (None, None)
+        size:       (45, 35)
+
+    Label:
+        id: _norma
+        size_hint:  (None, None)
+        size:       (120, 35)
 
