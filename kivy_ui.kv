@@ -53,6 +53,7 @@
 
 
 
+
 <GeneralOptions@BoxLayout>:
     orientation:    'horizontal'
     padding:        2
@@ -236,6 +237,7 @@
                 size_hint_y: None
                 height: '48dp'
                 on_release: dropdown4.select('Чт/Зп ЗУ')
+                on_press:   F.ReadMem().open()
             Button:
                 text: 'ЧтБуфВыд'
                 size_hint_y: None
@@ -481,6 +483,97 @@
             size_hint:  (None, None)
             size:       (200, 120)
             text:   'Текущяя пауза:\n' + str(app.pause_time)
+
+
+<TextInput_List@BoxLayout>:
+
+    text: '5'
+    id: _text_
+    TextInput:
+        padding: (8, 1, 2, 1)
+        halign: 'middle'
+        size_hint_x: .8
+        multiline: 'False'
+        input_filter: 'int'
+        text:       root.text
+        on_text:    root.a_number = self.text
+        on_text: if self.focus: app.data[root.row_id]['text'] = self.text
+
+<Label_List@BoxLayout>:
+
+    a_number: '5'
+    Label:
+        text: root.a_number
+
+
+
+<ReadMem@Popup>
+    id:        read_mem
+    title:     "Чтение/Запись Памяти"
+    size:       (650, 600)
+    size_hint : (None,None)
+
+
+
+    BoxLayout:
+        orientation: "vertical"
+        size:       (200, 800)
+        size_hint:  (None, None)
+
+        BoxLayout:
+            orientation: "horizontal"
+            size:       (200, 420)
+            size_hint:  (None, None)
+
+            RecycleView:
+                id: label_list_adreses
+                scroll_type: ['bars', 'content']
+                scroll_wheel_distance: dp(114)
+                bar_width: dp(10)
+                viewclass:  'Label_List'
+                data:       [{'a_number':str(x)} for x in range(1000, 1016)]
+
+                RecycleBoxLayout:
+                    default_size: None, dp(20)
+                    default_size_hint: None, None
+                    size_hint_y: None
+                    height: self.minimum_height
+                    orientation: 'vertical'
+                    spacing: dp(2)
+
+
+
+            RecycleView:
+                id: memory_data
+                scroll_type: ['bars', 'content']
+                scroll_wheel_distance: dp(114)
+                bar_width: dp(10)
+                viewclass:  'TextInput_List'
+                data:       app.data
+
+                RecycleBoxLayout:
+                    id: boxxxx
+                    default_size: None, dp(20)
+                    default_size_hint: None, None
+                    size_hint_y: None
+                    height: self.minimum_height
+                    orientation: 'vertical'
+                    spacing: dp(2)
+
+
+
+        Button:
+            size:       (100, 50)
+            size_hint:  (None, None)
+            text:           "Подтвердить"
+            on_release:     read_mem.dismiss()
+        Button:
+            size:       (100, 50)
+            size_hint:  (None, None)
+            text:           "Плюсуй"
+            on_release:     print(root.ids.memory_data.data)
+
+
 
 <Etap_info@BoxLayout>
     orientation: "vertical"

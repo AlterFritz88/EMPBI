@@ -10,6 +10,7 @@ from kivy.clock import Clock
 from driver import do_prog, get_info_for_send, etap_processor
 import time
 import threading
+from kivy.properties import ListProperty
 
 
 from kivy.lang import Builder
@@ -42,19 +43,20 @@ class EMPBI(App):
     etap_indicate = 1
     norma = True
 
+    test_list = [1,2,2, 133]
+
 
     def build(self):
         #Main.ids._label.ids.mail_label.text = str(self.time.time())
         #print(Main.ids)
-
-
-
+        self.data = [{'row_id': x, 'text': str(x)} for x in range(16)]
         return Main()
 
 
     def print_out(self):
         print(self.count_cirkles)
         print(self.root.ids)
+        print(self.root.ids.choices)
 
 
     def do_program(self):
@@ -146,12 +148,6 @@ class EMPBI(App):
                 self.show()
 
 
-
-
-
-
-
-
     def upd_ltxt(self):
         self.potok = threading.Thread(target=self.do_program)
         self.potok.start()
@@ -159,8 +155,6 @@ class EMPBI(App):
     def otladka(self):
         self.potok = threading.Thread(target=self.do_otladka)
         self.potok.start()
-
-
 
 
     def show(self):
@@ -181,10 +175,6 @@ class EMPBI(App):
             return int(string)
         else:
             return 1
-
-
-
-
 
 
 if __name__ == "__main__":
