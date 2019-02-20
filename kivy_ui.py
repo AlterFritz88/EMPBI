@@ -12,6 +12,10 @@ import time
 import threading
 from kivy.properties import ListProperty
 
+import serial
+from to_binary import hex2bin
+
+
 
 from kivy.lang import Builder
 Builder.load_file('kivy_ui.kv')
@@ -49,7 +53,9 @@ class EMPBI(App):
     def build(self):
         #Main.ids._label.ids.mail_label.text = str(self.time.time())
         #print(Main.ids)
-        self.data = [{'row_id': x, 'text': str(x)} for x in range(16)]
+        self.data_mem_read = [{'row_id': x, 'text': str(x)} for x in range(16)]
+        self.adress_pam = [{'a_number':str(x)} for x in range(0, 16)]
+        self.read_pam()
         return Main()
 
 
@@ -175,6 +181,46 @@ class EMPBI(App):
             return int(string)
         else:
             return 1
+
+    def down_pam(self):
+        for d in self.adress_pam:
+            d.update((k, str(int(v)+16)) for k, v in d.items())
+        data = self.read_pam()
+        for d in range(len(self.data_mem_read)):
+            self.data_mem_read[d].update((k, data[d]) for k, v in self.data_mem_read[d].items())
+
+
+    def up_pam(self):
+        for d in self.adress_pam:
+            if int(d['a_number']) - 1 < 0:
+                break
+            d.update((k, str(int(v)-16)) for k, v in d.items())
+        data = self.read_pam()
+        for d in range(len(self.data_mem_read)):
+            self.data_mem_read[d].update((k, data[d]) for k, v in self.data_mem_read[d].items())
+
+    def read_pam(self):
+        ser = serial.Serial('/dev/ttyUSB0', baudrate=1000000, timeout=0.5)
+        first_adr = hex2bin(self.adress_pam[0]['a_number'], 10)
+        print(first_adr)
+        ans = []
+        first_adr_0 = first_adr[8:]
+        first_adr_1 = first_adr[0:8]
+        posilka = ['10011000', '00010000', first_adr_1, first_adr_0]
+        data_b = [bytes([int(x, 2)]) for x in posilka]
+        for inf in data_b:
+            print(inf)
+            ser.write(inf)
+        for i in range(16):
+            read = ser.read(2)
+            ans.append(hex2bin(str(int.from_bytes(read, byteorder='big')), 10))
+
+        ans = [str(int(x, 2)) for x in ans]
+        mem_read = [{'row_id': y, 'text': x} for y, x in zip(range(16), ans)]
+
+
+
+        return ans
 
 
 if __name__ == "__main__":

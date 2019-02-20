@@ -81,7 +81,7 @@
                 size_hint_y: None
                 height: '48dp'
                 on_release: dropdown1.select('Режим')
-                on_press:   app.print_out()
+                on_press:   app.read_pam()
 
             Button:
                 text: 'КолЦикл'
@@ -237,6 +237,7 @@
                 size_hint_y: None
                 height: '48dp'
                 on_release: dropdown4.select('Чт/Зп ЗУ')
+                on_press:   app.read_pam()
                 on_press:   F.ReadMem().open()
             Button:
                 text: 'ЧтБуфВыд'
@@ -497,7 +498,7 @@
         input_filter: 'int'
         text:       root.text
         on_text:    root.a_number = self.text
-        on_text: if self.focus: app.data[root.row_id]['text'] = self.text
+        on_text: if self.focus: app.data_mem_read[root.row_id]['text'] = self.text
 
 <Label_List@BoxLayout>:
 
@@ -513,16 +514,14 @@
     size:       (650, 600)
     size_hint : (None,None)
 
-
-
     BoxLayout:
         orientation: "vertical"
-        size:       (200, 800)
+        size:       (400, 800)
         size_hint:  (None, None)
 
         BoxLayout:
             orientation: "horizontal"
-            size:       (200, 420)
+            size:       (350, 420)
             size_hint:  (None, None)
 
             RecycleView:
@@ -531,7 +530,7 @@
                 scroll_wheel_distance: dp(114)
                 bar_width: dp(10)
                 viewclass:  'Label_List'
-                data:       [{'a_number':str(x)} for x in range(1000, 1016)]
+                data:       app.adress_pam
 
                 RecycleBoxLayout:
                     default_size: None, dp(20)
@@ -541,15 +540,13 @@
                     orientation: 'vertical'
                     spacing: dp(2)
 
-
-
             RecycleView:
                 id: memory_data
                 scroll_type: ['bars', 'content']
                 scroll_wheel_distance: dp(114)
                 bar_width: dp(10)
                 viewclass:  'TextInput_List'
-                data:       app.data
+                data:       app.data_mem_read
 
                 RecycleBoxLayout:
                     id: boxxxx
@@ -559,6 +556,32 @@
                     height: self.minimum_height
                     orientation: 'vertical'
                     spacing: dp(2)
+
+            AnchorLayout:
+                anchor_x:   'right'
+                anchor_y:   'center'
+                BoxLayout:
+                    orientation: "vertical"
+                    size_hint:  (None, None)
+                    Button:
+                        size:       (100, 30)
+                        size_hint:  (None, None)
+                        text:           "Вверх"
+                        on_release:   app.up_pam()
+
+                        on_release:   read_mem.dismiss()
+                        on_release:   F.ReadMem().open()
+                    Button:
+                        size:       (100, 30)
+                        size_hint:  (None, None)
+                        text:           "Вниз"
+
+                        on_release:   read_mem.dismiss()
+                        on_release:   app.down_pam()
+
+                        on_release:   F.ReadMem().open()
+
+
 
 
 
