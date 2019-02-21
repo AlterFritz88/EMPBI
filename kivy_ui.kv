@@ -237,7 +237,7 @@
                 size_hint_y: None
                 height: '48dp'
                 on_release: dropdown4.select('Чт/Зп ЗУ')
-                on_press:   app.read_pam()
+                on_press:   app.init_pam()
                 on_press:   F.ReadMem().open()
             Button:
                 text: 'ЧтБуфВыд'
@@ -499,6 +499,7 @@
         text:       root.text
         on_text:    root.a_number = self.text
         on_text: if self.focus: app.data_mem_read[root.row_id]['text'] = self.text
+        on_text: if self.focus: app.read_pam()
 
 <Label_List@BoxLayout>:
 

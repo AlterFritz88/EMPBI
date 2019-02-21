@@ -53,7 +53,7 @@ class EMPBI(App):
     def build(self):
         #Main.ids._label.ids.mail_label.text = str(self.time.time())
         #print(Main.ids)
-        self.data_mem_read = [{'row_id': x, 'text': str(x)} for x in range(16)]
+        self.data_mem_read = [{'row_id': x, 'text': str(88)} for x in range(16)]
         self.adress_pam = [{'a_number':str(x)} for x in range(0, 16)]
         self.read_pam()
         return Main()
@@ -187,7 +187,7 @@ class EMPBI(App):
             d.update((k, str(int(v)+16)) for k, v in d.items())
         data = self.read_pam()
         for d in range(len(self.data_mem_read)):
-            self.data_mem_read[d].update((k, data[d]) for k, v in self.data_mem_read[d].items())
+            self.data_mem_read[d].update((k, data[d]) for k, v in self.data_mem_read[d].items() if k == 'text')
 
 
     def up_pam(self):
@@ -197,7 +197,7 @@ class EMPBI(App):
             d.update((k, str(int(v)-16)) for k, v in d.items())
         data = self.read_pam()
         for d in range(len(self.data_mem_read)):
-            self.data_mem_read[d].update((k, data[d]) for k, v in self.data_mem_read[d].items())
+            self.data_mem_read[d].update((k, data[d]) for k, v in self.data_mem_read[d].items() if k == 'text')
 
     def read_pam(self):
         ser = serial.Serial('/dev/ttyUSB0', baudrate=1000000, timeout=0.5)
@@ -217,10 +217,16 @@ class EMPBI(App):
 
         ans = [str(int(x, 2)) for x in ans]
         mem_read = [{'row_id': y, 'text': x} for y, x in zip(range(16), ans)]
-
-
-
         return ans
+
+# надо сделать функцию апдейта данных
+
+    def init_pam(self):
+        for d in range(len(self.adress_pam)):
+            self.adress_pam[d].update((k, str(0+d)) for k, v in self.adress_pam[d].items())
+        data = self.read_pam()
+        for d in range(len(self.data_mem_read)):
+            self.data_mem_read[d].update((k, data[d]) for k, v in self.data_mem_read[d].items() if k == 'text')
 
 
 if __name__ == "__main__":
