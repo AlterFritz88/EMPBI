@@ -23,7 +23,7 @@ def to_binary_pp(filename):
             for i in range(len(line)):
                 if line[0] == '/':
                     break
-                elif (line[i] == ',') and (line[0] == 'x'):
+                elif (line[i] == ',') and (line[0:2] == '0x'):
                     temp[count_et].append(hex2bin(line[1:i], 16))
                     break
                 elif (line[i] == ',') and (line[0] == '0'):

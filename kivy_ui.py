@@ -11,6 +11,8 @@ from driver import do_prog, get_info_for_send, etap_processor
 import time
 import threading
 from kivy.properties import ListProperty
+from kivy.factory import Factory
+from kivy.core.window import Window
 
 import serial
 from to_binary import hex2bin
@@ -55,7 +57,7 @@ class EMPBI(App):
         #print(Main.ids)
         self.data_mem_read = [{'row_id': x, 'text': str(88)} for x in range(16)]
         self.adress_pam = [{'a_number':str(x)} for x in range(0, 16)]
-        self.read_pam()
+        #self.read_pam()
         return Main()
 
 
@@ -208,18 +210,26 @@ class EMPBI(App):
         first_adr_1 = first_adr[0:8]
         posilka = ['10011000', '00010000', first_adr_1, first_adr_0]
         data_b = [bytes([int(x, 2)]) for x in posilka]
+        read_binary_data = []
         for inf in data_b:
             print(inf)
             ser.write(inf)
+
+
         for i in range(16):
             read = ser.read(2)
+            read_binary_data.append(read)
+            print(read)
             ans.append(hex2bin(str(int.from_bytes(read, byteorder='big')), 10))
-
+        if b'' in read_binary_data:
+            print('Ошибка соединения с блоком')
+            Factory.ErrorConnection().open()
         ans = [str(int(x, 2)) for x in ans]
-        mem_read = [{'row_id': y, 'text': x} for y, x in zip(range(16), ans)]
+        print(ans)
+        #mem_read = [{'row_id': y, 'text': x} for y, x in zip(range(16), ans)]
         return ans
 
-# надо сделать функцию апдейта данных
+
 
     def init_pam(self):
         for d in range(len(self.adress_pam)):
@@ -228,6 +238,23 @@ class EMPBI(App):
         for d in range(len(self.data_mem_read)):
             self.data_mem_read[d].update((k, data[d]) for k, v in self.data_mem_read[d].items() if k == 'text')
 
+    def write_pam(self):
+        ser = serial.Serial('/dev/ttyUSB0', baudrate=1000000, timeout=0.5)
+        first_adr = hex2bin(self.adress_pam[0]['a_number'], 10)
+        print(first_adr)
+        first_adr_0 = first_adr[8:]
+        first_adr_1 = first_adr[0:8]
+        posilka = ['10010100', '00010000', first_adr_1, first_adr_0]
+        for i in self.data_mem_read:
+            d = hex2bin(i['text'], 10)
+            posilka.append(d[:8])
+            posilka.append(d[8:])
+        print(posilka)
+        data_b = [bytes([int(x, 2)]) for x in posilka]
+        for inf in data_b:
+            print(inf)
+            ser.write(inf)
 
+Window.size = (1366, 968)
 if __name__ == "__main__":
     EMPBI().run()

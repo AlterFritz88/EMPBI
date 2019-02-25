@@ -16,7 +16,6 @@
             width:  1000
             size_hint: None, None
 
-
     AnchorLayout:
         anchor_x:   'left'
         anchor_y:   'center'
@@ -31,13 +30,9 @@
                 id:     _etap_info
                 size_hint: None, None
 
-
-
             Out_info:
                 id:     _label
                 size_hint: None, None
-                #width:      root.width - _general_options.width
-                #height:     root.height - _general_options.height
 
     AnchorLayout:
         anchor_x:   'left'
@@ -46,13 +41,6 @@
         Indicate:
             id:     _indicate
             size_hint: None, None
-
-
-
-
-
-
-
 
 <GeneralOptions@BoxLayout>:
     orientation:    'horizontal'
@@ -334,6 +322,12 @@
                 size_hint_y: None
                 height: '48dp'
                 on_release: dropdown5.select('УпрZup')
+            Button:
+                text: 'ФорматДанных'
+                size_hint_y: None
+                height: '48dp'
+                on_release: dropdown5.select('ФорматДанных')
+                on_press:   F.DataFormat().open()
     Button:
         text: 'Выход'
         height: '48dp'
@@ -401,9 +395,54 @@
                 data=app.my_data,
                 cls=label.Label)
 
+<DataFormat@Popup>
+    id: data_format
+    title:     "Выбор формата данных"
+    size:       (650, 300)
+    size_hint : (None,None)
 
+    BoxLayout:
+        orientation: "vertical"
+        size:       (600, 300)
+        size_hint:  (None, None)
 
+        BoxLayout:
+            orientation: "horizontal"
+            size:       (600, 120)
+            size_hint:  (None, None)
+            Label:
+                text: "Двоичная"
+                size_hint:  (1, 0.2)
+            Label:
+                text: "Восьмеричная"
+                size_hint:  (1, 0.2)
+            Label:
+                text: "Десятичная"
+                size_hint:  (1, 0.2)
+            Label:
+                text: "Шестнадцатеричная"
+                size_hint:  (1, 0.2)
 
+        BoxLayout:
+            orientation: "horizontal"
+            size:       (600, 120)
+            size_hint:  (None, None)
+            CheckBox:
+                group: 'check'
+                id : bit_2
+            CheckBox:
+                group: 'check'
+                id : bit_8
+                active: True
+            CheckBox:
+                group: 'check'
+                id : bit_10
+            CheckBox:
+                group: 'check'
+                id : bit_16
+        Button:
+            size_hint:  (0.2, 1)
+            text:        "ОК"
 
 
 <Count_circle@Popup>
@@ -444,6 +483,25 @@
             size_hint:  (None, None)
             size:       (200, 120)
             text:   'Текущее кол-во циклов:\n' + str(app.count_cirkles)
+
+<ErrorConnection@Popup>
+    id: error_connection
+    title:  'Ошибка соединения с блоком'
+    size:       (350, 180)
+    size_hint : (None,None)
+    BoxLayout:
+        orientation: "vertical"
+        size:       (350, 120)
+        size_hint:  (None, None)
+
+        Label:
+            text: "Нет соединения с блоком"
+            size_hint:  (0.9, 0.2)
+
+        Button:
+            size_hint:  (0.9, 0.2)
+            text:           "Попробуйте снова"
+            on_release:     app.stop()
 
 
 <Pause@Popup>
@@ -499,6 +557,7 @@
         text:       root.text
         on_text:    root.a_number = self.text
         on_text: if self.focus: app.data_mem_read[root.row_id]['text'] = self.text
+        on_text: if self.focus: app.write_pam()
         on_text: if self.focus: app.read_pam()
 
 <Label_List@BoxLayout>:
@@ -582,21 +641,16 @@
 
                         on_release:   F.ReadMem().open()
 
-
-
-
-
         Button:
             size:       (100, 50)
             size_hint:  (None, None)
             text:           "Подтвердить"
-            on_release:     read_mem.dismiss()
+            on_release:     app.write_pam()
         Button:
             size:       (100, 50)
             size_hint:  (None, None)
             text:           "Плюсуй"
             on_release:     print(root.ids.memory_data.data)
-
 
 
 <Etap_info@BoxLayout>
@@ -700,8 +754,6 @@
             size:       (80, 35)
             input_filter: 'int'
 
-
-    #disabled: not self.visible
 
     Button:
         id: _button_test
